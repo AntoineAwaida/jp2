@@ -1,4 +1,4 @@
-import AsyncStorage from "@react-native-community/async-storage";
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default async function logCredentials(
   server,
@@ -6,22 +6,22 @@ export default async function logCredentials(
   password,
   database,
   port,
-  depot
+  depot,
 ) {
-  await AsyncStorage.removeItem("credentials");
+  await AsyncStorage.removeItem('credentials');
 
-  if (depot === "") {
+  if (depot === '') {
     depot = null;
   }
 
-  credentials = {
+  const credentials = {
     server: server,
     username: username,
     password: password,
     database: database,
     port: parseInt(port),
-    depot: depot
+    depot: depot,
   };
 
-  AsyncStorage.setItem("credentials", JSON.stringify(credentials));
+  AsyncStorage.setItem('credentials', JSON.stringify(credentials));
 }

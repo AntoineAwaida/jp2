@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 
 import {SafeAreaView} from 'react-navigation';
 
-import {Text} from 'react-native-elements';
+import {Text, Badge} from 'react-native-elements';
 
 import _ from 'lodash';
 
@@ -24,11 +24,11 @@ import ArticlesPick from './layouts/articles/ArticlesPick';
 import Customers from './customers/Customers';
 
 import SelectedCustomer from './customers/SelectedCustomer';
-import LinearGradient from 'react-native-linear-gradient';
 
 import logError from '../Settings/logError';
 
 import withBadge from './withBadge';
+import CriteriaModal from './modals/CriteriaModal';
 
 const EventEmitter = require('events');
 
@@ -70,11 +70,18 @@ class Orders extends Component {
     this.state = {
       isCustomerModalVisible: false,
       isBasketModalVisible: false,
+
       customer: null,
       article: null,
       GPS: null,
       articles: [],
       articlesPickOpacity: new Animated.Value(0),
+      criteria: {
+        famille: [],
+        sous_famille: [],
+        gamme: [],
+        qualite: [],
+      },
     };
 
     this.ee = new EventEmitter();
@@ -112,6 +119,12 @@ class Orders extends Component {
   }
 
   listenEvents() {
+    this.ee.on('criteriaSelected', criteria => {
+      this.setState({
+        criteria: {...this.state.criteria, [criteria.type]: criteria.content},
+      });
+    });
+
     this.ee.on('editArticles', articles => {
       this.setState({articles: articles, article: null}, () => {
         const {articles} = this.state;
@@ -213,11 +226,23 @@ class Orders extends Component {
         {
           text: 'Yes',
           onPress: () =>
-            this.setState({customer: null, articles: []}, () => {
-              this.props.navigation.setParams({
-                articles: this.state.articles,
-              });
-            }),
+            this.setState(
+              {
+                customer: null,
+                articles: [],
+                criteria: {
+                  famille: [],
+                  sous_famille: [],
+                  gamme: [],
+                  qualite: [],
+                },
+              },
+              () => {
+                this.props.navigation.setParams({
+                  articles: this.state.articles,
+                });
+              },
+            ),
         },
       ],
       {cancelable: false},
@@ -225,20 +250,9 @@ class Orders extends Component {
   }
 
   render() {
+    console.log(this.state.criteria);
     return (
-      <LinearGradient
-        style={{flex: 1}}
-        colors={[
-          'rgba(255, 71, 71, .2)',
-          'rgba(250, 225, 208, .4)',
-
-          'rgba(128, 200, 188, .3)',
-
-          // "rgba(98, 0,238, .7)",
-          // "rgba(120, 50,238, .6)",
-          // "rgba(120, 50,238, .6)",
-          // "rgba(252, 251,250, .1)"
-        ]}>
+      <View style={{flex: 1, backgroundColor: 'rgba(255, 71, 71, .2)'}}>
         <SafeAreaView style={style.contain}>
           <BasketModal
             article={this.state.article}
@@ -249,17 +263,24 @@ class Orders extends Component {
 
           {!this.state.customer ? (
             <ScrollView style={style.selectCustomercontainer}>
-              <View style={{flex: 0.1, justifyContent: 'center'}}>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    fontFamily: 'Roboto-Bold',
-                    marginLeft: 15,
-                    color: '#FF4747',
-                    marginTop: 15,
-                  }}>
-                  SELECT A CUSTOMER
-                </Text>
+              <View
+                style={{
+                  flex: 0.1,
+                  justifyContent: 'flex-start',
+                  alignItems: 'flex-start',
+                }}>
+                <Badge
+                  containerStyle={{margin: 5, padding: 5}}
+                  badgeStyle={{
+                    margin: 5,
+                    padding: 15,
+                    backgroundColor: '#ff4747',
+                  }}
+                  value={
+                    <Text style={{color: 'white', fontSize: 15}}>
+                      Select a customer.
+                    </Text>
+                  }></Badge>
               </View>
 
               <View
@@ -272,21 +293,6 @@ class Orders extends Component {
                   emitter={this.ee}
                   selectCustomer={this.selectCustomer}
                 />
-                {/* <View style={{ flex: 0.5 }}>
-                  <Button
-                    icon={<Icon name="search" size={27} color="white" />}
-                    title=" Search"
-                    onPress={() => this.toggleCustomerModal()}
-                  />
-                </View>
-                <View style={{ flex: 0.5 }}>
-                  <Button
-                    title=" Create"
-                    icon={
-                      <FontAwesome5 name="user-plus" size={25} color="white" />
-                    }
-                  />
-                </View> */}
               </View>
             </ScrollView>
           ) : (
@@ -295,6 +301,7 @@ class Orders extends Component {
               <ScrollView style={style.selectCustomercontainer}>
                 <View style={style.customerContainer}>
                   <SelectedCustomer
+                    emitter={this.ee}
                     customer={this.state.customer}
                     cancelCustomer={this.cancelCustomer}
                   />
@@ -303,9 +310,11 @@ class Orders extends Component {
                   <View style={style.listArticles}></View>
                   <View style={style.pickArticles}>
                     <ArticlesPick
+                      criterias={this.state.criteria}
                       articles={this.state.articles}
                       ee={this.ee}
                       toggleBasketModal={e => this.toggleBasketModal(e)}
+                      toggleCriteriaModal={e => this.toggleCriteriaModal(e)}
                     />
                   </View>
                 </View>
@@ -325,7 +334,7 @@ class Orders extends Component {
             </Animated.View>
           )}
         </SafeAreaView>
-      </LinearGradient>
+      </View>
     );
   }
 }
@@ -339,12 +348,11 @@ const style = StyleSheet.create({
     flex: 1,
   },
   customerContainer: {
-    flex: 0.2,
+    flex: 0.1,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    borderBottomWidth: 3,
-    borderBottomColor: '#FF4747',
+
+    margin: 10,
   },
 
   shoppingCardContainer: {

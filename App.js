@@ -10,7 +10,6 @@ import React, {Component} from 'react';
 
 import {PermissionsAndroid, View, Text} from 'react-native';
 
-import {ActivityIndicator} from 'react-native-paper';
 import {DB} from './database/database';
 import AsyncStorage from '@react-native-community/async-storage';
 import Navigation from './components/Navigation/Navigation';

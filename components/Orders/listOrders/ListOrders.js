@@ -1,24 +1,24 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 
-import { View, Text } from "react-native";
-import { DB } from "../../../database/database";
-import { ActivityIndicator } from "react-native-paper";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
-import { ListItem } from "react-native-elements";
+import {View, Text} from 'react-native';
+import {DB} from '../../../database/database';
+import {ActivityIndicator} from 'react-native-paper';
+import {FlatList, ScrollView} from 'react-native-gesture-handler';
+import {ListItem} from 'react-native-elements';
 
-import PropTypes from "prop-types";
-import logError from "../../Settings/logError";
+import PropTypes from 'prop-types';
+import logError from '../../Settings/logError';
 
 export default class ListOrders extends Component {
   static navigationOptions = {
-    headerTitle: "Orders History"
+    headerTitle: 'Orders History',
   };
 
   constructor(props, context) {
     super(props, context);
     this.state = {
       isLoading: true,
-      commandes: null
+      commandes: null,
     };
   }
 
@@ -34,8 +34,8 @@ export default class ListOrders extends Component {
               for (let i = 0; i < results.rows.length; i++) {
                 data.push(results.rows.item(i));
               }
-              this.setState({ commandes: data, isLoading: false });
-            }
+              this.setState({commandes: data, isLoading: false});
+            },
           );
         });
       })
@@ -48,8 +48,8 @@ export default class ListOrders extends Component {
       <View
         style={{
           height: 1,
-          width: "100%",
-          backgroundColor: "#CED0CE"
+          width: '100%',
+          backgroundColor: '#CED0CE',
         }}
       />
     );
@@ -57,11 +57,11 @@ export default class ListOrders extends Component {
 
   render() {
     return this.state.isLoading ? (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <ActivityIndicator size="large" color="#FF4747" />
       </View>
     ) : this.state.commandes.length === 0 ? (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <Text>No orders yet.</Text>
       </View>
     ) : (
@@ -70,25 +70,23 @@ export default class ListOrders extends Component {
           keyExtractor={item => item.Code_Commande.toString()}
           data={this.state.commandes.reverse()}
           ItemSeparatorComponent={this.renderSeparator}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <ListItem
               onPress={() =>
-                this.props.navigation.navigate("ViewOrder", {
-                  Code_Commande: item.Code_Commande
+                this.props.navigation.navigate('ViewOrder', {
+                  Code_Commande: item.Code_Commande,
                 })
               }
-              titleStyle={{ fontWeight: "bold", color: "#571db2" }}
+              titleStyle={{fontWeight: 'bold', color: '#571db2'}}
               key={item.Code_Commande}
               subtitle={
                 <View>
                   <Text>{item.MontantAcompte}</Text>
-                  <Text style={{ textAlign: "right" }}>
-                    {item.RaisonSociale}
-                  </Text>
+                  <Text style={{textAlign: 'right'}}>{item.RaisonSociale}</Text>
                   <Text>{item.DateCreation.toString()}</Text>
                 </View>
               }
-              title={"Order #" + item.Code_Commande}
+              title={'Order #' + item.Code_Commande}
             />
           )}
         />
@@ -98,5 +96,5 @@ export default class ListOrders extends Component {
 }
 
 ListOrders.propTypes = {
-  navigation: PropTypes.any
+  navigation: PropTypes.any,
 };

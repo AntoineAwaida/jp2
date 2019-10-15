@@ -15,13 +15,18 @@ import Logs from '../Settings/Logs';
 
 import ViewOrder from '../Orders/viewOrder/ViewOrder';
 import ListOrders from '../Orders/listOrders/ListOrders';
+import ArticlesList from '../Orders/layouts/articles/ArticlesList';
+import Login from '../Login/Login';
+import Logout from '../Logout/Logout';
 
 const OrderNavigator = createStackNavigator(
   {
     Orders: {
       screen: Orders,
     },
-
+    ArticlesList: {
+      screen: ArticlesList,
+    },
     ViewOrder: {
       screen: ViewOrder,
     },
@@ -58,9 +63,9 @@ const TabNavigator = createBottomTabNavigator(
     //   screen: Sync,
     // },
 
-    // Logout: {
-    //   screen: Logout,
-    // },
+    Logout: {
+      screen: Logout,
+    },
   },
   {
     defaultNavigationOptions: ({navigation}) => ({
@@ -110,9 +115,9 @@ const TabAdminNavigator = createBottomTabNavigator(
       screen: SettingsNavigator,
     },
 
-    // Logout: {
-    //   screen: Logout,
-    // },
+    Logout: {
+      screen: Logout,
+    },
   },
   {
     defaultNavigationOptions: ({navigation}) => ({
@@ -146,21 +151,18 @@ const TabAdminNavigator = createBottomTabNavigator(
 
 const AuthNavigator = createSwitchNavigator(
   {
-    // Login: {
-    //   screen: Login,
-    // },
-    // Main: {
-    //   screen: TabNavigator,
-    // },
-    // MainAdmin: {
-    //   screen: TabAdminNavigator,
-    // },
+    Login: {
+      screen: Login,
+    },
     Main: {
+      screen: TabNavigator,
+    },
+    MainAdmin: {
       screen: TabAdminNavigator,
     },
   },
   {
-    initialRouteName: 'Main',
+    initialRouteName: 'Login',
     headerMode: 'none',
     animationEnabled: 'true',
   },

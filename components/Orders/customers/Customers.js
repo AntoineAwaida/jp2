@@ -84,7 +84,7 @@ class Customers extends Component {
 
           <View style={{justifyContent: 'center'}}>
             {this.state.isLoading ? (
-              <ActivityIndicator size="large" />
+              <ActivityIndicator size="large" color="#FF4747" />
             ) : (
               <FlatList
                 contentContainerStyle={{borderRadius: 20}}
