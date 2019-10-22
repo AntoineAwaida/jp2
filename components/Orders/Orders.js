@@ -28,7 +28,8 @@ import SelectedCustomer from './customers/SelectedCustomer';
 import logError from '../Settings/logError';
 
 import withBadge from './withBadge';
-import CriteriaModal from './modals/CriteriaModal';
+import Geolocation from 'react-native-geolocation-service';
+import Dimmer from './modals/Dimmer';
 
 const EventEmitter = require('events');
 
@@ -70,7 +71,7 @@ class Orders extends Component {
     this.state = {
       isCustomerModalVisible: false,
       isBasketModalVisible: false,
-
+      showDimmer: false,
       customer: null,
       article: null,
       GPS: null,
@@ -119,6 +120,12 @@ class Orders extends Component {
   }
 
   listenEvents() {
+    this.ee.on('clearOffer', () => this.clearOffer());
+
+    this.ee.on('showDimmer', () => this.setState({showDimmer: true}));
+
+    this.ee.on('dismissDimmer', () => this.setState({showDimmer: false}));
+
     this.ee.on('criteriaSelected', criteria => {
       this.setState({
         criteria: {...this.state.criteria, [criteria.type]: criteria.content},
@@ -147,27 +154,27 @@ class Orders extends Component {
     this.keyboardDidHidelistener.remove();
   }
 
-  //   getCoordinates(high) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       res => {
-  //         const coordinates = {
-  //           latitude: res.coords.latitude,
-  //           longitude: res.coords.longitude,
-  //           speed: res.coords.speed,
-  //           heading: res.coords.heading
-  //         };
-  //         this.setState({ GPS: coordinates });
-  //       },
-  //       err => {
-  //         if (high === false) {
-  //           logError(err.message);
-  //         } else {
-  //           this.getCoordinates(false);
-  //         }
-  //       },
-  //       { enableHighAccuracy: high, timeout: 5000 }
-  //     );
-  //   }
+  getCoordinates(high) {
+    Geolocation.getCurrentPosition(
+      res => {
+        const coordinates = {
+          latitude: res.coords.latitude,
+          longitude: res.coords.longitude,
+          speed: res.coords.speed,
+          heading: res.coords.heading,
+        };
+        this.setState({GPS: coordinates});
+      },
+      err => {
+        if (high === false) {
+          logError(err.message);
+        } else {
+          this.getCoordinates(false);
+        }
+      },
+      {enableHighAccuracy: high, timeout: 5000},
+    );
+  }
 
   componentDidMount() {
     this.listenKeyboard();
@@ -177,7 +184,7 @@ class Orders extends Component {
     const ee = this.ee;
     this.props.navigation.setParams({articles, ee});
 
-    //   this.getCoordinates(true);
+    this.getCoordinates(true);
   }
 
   toggleBasketModal(article) {
@@ -250,7 +257,7 @@ class Orders extends Component {
   }
 
   render() {
-    console.log(this.state.criteria);
+    console.log(this.state.GPS);
     return (
       <View style={{flex: 1, backgroundColor: 'rgba(255, 71, 71, .2)'}}>
         <SafeAreaView style={style.contain}>
@@ -259,6 +266,11 @@ class Orders extends Component {
             isVisible={this.state.isBasketModalVisible}
             ee={this.ee}
             toggleBasketModal={e => this.toggleBasketModal(e)}
+          />
+
+          <Dimmer
+            isVisible={this.state.showDimmer}
+            msg={'Saving order, please wait...'}
           />
 
           {!this.state.customer ? (

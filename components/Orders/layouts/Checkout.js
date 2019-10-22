@@ -15,6 +15,7 @@ import {DB} from '../../../database/database';
 import AsyncStorage from '@react-native-community/async-storage';
 import getPrice from './getPrice';
 import logError from '../../Settings/logError';
+import save_order from '../../../requests/save_order';
 
 function Checkout(props) {
   const [price, setPrice] = useState(0);
@@ -22,105 +23,24 @@ function Checkout(props) {
   const [bottomPosition, setbottomPosition] = useState(new Animated.Value(0));
 
   async function saveOrder() {
-    let latitude = null;
-    let longitude = null;
-
-    let credentials = await AsyncStorage.getItem('credentials');
-
-    let maxCode = await AsyncStorage.getItem('codeCommande');
-
-    maxCode = JSON.parse(maxCode);
-
-    credentials = await JSON.parse(credentials);
-
-    const depot = credentials.depot;
-
-    if (depot) {
-      props.GPS &&
-        ((latitude = props.GPS.latitude), (longitude = props.GPS.longitude));
-
-      DB.getDatabase()
-        .then(db => {
-          db.transaction(tx => {
-            tx.executeSql(
-              `SELECT Code_Commande FROM pct_COMMANDE ORDER BY Code_Commande DESC limit 1`,
-              [],
-              (tx, results) => {
-                let code_commande = 0;
-
-                if (results.rows.length > 0) {
-                  code_commande = results.rows.item(0)['Code_Commande'] + 1;
-                } else {
-                  code_commande = maxCode + 1;
-                }
-
-                tx.executeSql(
-                  `INSERT INTO pct_COMMANDE(Code_Client, Code_Commande, DateCreation, MontantAcompte, nomPoste, ZoneN4, ZoneN5) VALUES (?, ?, ?, ?, ?, ?, ?)`,
-                  [
-                    props.customer.Code_Client,
-                    code_commande,
-                    new Date()
-                      .toISOString()
-                      .slice(0, 19)
-                      .replace('T', ' '),
-                    price,
-                    depot,
-                    latitude,
-                    longitude,
-                  ],
-                );
-
-                props.articles.map((article, i) => {
-                  tx.executeSql(
-                    `INSERT INTO pct_COMMANDEcomposition(Code_Commande, Code_Article, Quantite, PrixUnitaire, NumLigne, nomPoste) VALUES (?, ?, ?, ?, ?, ?)`,
-                    [
-                      code_commande,
-                      article.Code_Article,
-                      article.quantity,
-                      article.PrixUnitaire,
-                      i,
-                      depot,
-                    ],
-                  );
-                });
-                props.articles.map(article => {
-                  tx.executeSql(
-                    `UPDATE ArticleDepot SET StockDepot=? WHERE Code_Article=?`,
-                    [
-                      article.StockDepot - article.quantity,
-                      article.Code_Article,
-                    ],
-                  );
-                });
-              },
-            );
-          });
-        })
-        .catch(err => {
-          logError(err);
-        })
-        .then(() => {
-          DB.getDatabase().then(db => {
-            db.transaction(tx => {
-              tx.executeSql(
-                `SELECT Code_Commande FROM pct_COMMANDE ORDER BY Code_Commande DESC limit 1`,
-                [],
-                (tx, results) => {
-                  code_commande = results.rows.item(0)['Code_Commande'];
-                  props.navigation.navigate('ViewOrder', {
-                    Code_Commande: code_commande,
-                  });
-                  props.clearOffer();
-                },
-              );
-            });
-          });
-        })
-        .catch(err => {
-          logError(err);
-        });
-    } else {
-      Alert.alert('Please select a depot in the settings first!');
+    props.emitter.emit('showDimmer');
+    try {
+      const result = await save_order(
+        props.GPS,
+        props.customer.Code_Client,
+        price,
+        props.articles,
+      );
+      props.navigation.navigate('ViewOrder', {
+        Code_Commande: result,
+        save: true,
+        emitter: props.emitter,
+      });
+    } catch (e) {
+      logError(e);
+      console.log(e);
+    } finally {
+      props.emitter.emit('dismissDimmer');
     }
   }
 

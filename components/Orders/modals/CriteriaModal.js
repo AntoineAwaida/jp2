@@ -7,6 +7,7 @@ import get_family from '../../../requests/criterias/get_family';
 import get_sousfamille from '../../../requests/criterias/get_sousfamille';
 import get_gamme from '../../../requests/criterias/get_gamme';
 import get_qualite from '../../../requests/criterias/get_qualite';
+import logError from '../../Settings/logError';
 
 export default class CriteriaModal extends Component {
   constructor(props) {
@@ -43,7 +44,10 @@ export default class CriteriaModal extends Component {
         .then(res => {
           this.setState({criteria: res, isLoading: false});
         })
-        .catch(e => console.log(e));
+        .catch(e => {
+          logError(e);
+          console.log(e);
+        });
   }
 
   componentDidMount() {

@@ -13,6 +13,7 @@ import {PermissionsAndroid, View, Text} from 'react-native';
 import {DB} from './database/database';
 import AsyncStorage from '@react-native-community/async-storage';
 import Navigation from './components/Navigation/Navigation';
+import {ActivityIndicator} from 'react-native-paper';
 
 export default class App extends Component {
   constructor(props, context) {
@@ -48,9 +49,7 @@ export default class App extends Component {
   }
 
   async componentDidMount() {
-    // await this.testDBConnection();
-    // await this.createTables();
-    // await this.requestCameraPermission();
+    await this.requestLocationPermission();
   }
 
   async requestLocationPermission() {
@@ -69,7 +68,6 @@ export default class App extends Component {
         this.setState({granted: 'granted'});
       } else {
         this.setState({granted: 'no'});
-        //demander à nouveau si échec?
       }
     } catch (err) {
       logError(err.message);
@@ -77,21 +75,20 @@ export default class App extends Component {
   }
 
   render() {
-    return <Navigation />;
-    // return this.state.granted ? (
-    //   this.state.granted === 'granted' ? (
-    //     <Navigation />
-    //   ) : (
-    //     <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-    //       <Text>
-    //         You must grant access to your location to the application!
-    //       </Text>
-    //     </View>
-    //   )
-    // ) : (
-    //   <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-    //     <Text>Coucou</Text>
-    //   </View>
-    // );
+    return this.state.granted ? (
+      this.state.granted === 'granted' ? (
+        <Navigation />
+      ) : (
+        <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+          <Text>
+            You must grant access to your location to the application!
+          </Text>
+        </View>
+      )
+    ) : (
+      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+        <ActivityIndicator size="large" color="#FF4747" />
+      </View>
+    );
   }
 }

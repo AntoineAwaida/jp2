@@ -51,9 +51,7 @@ export default async function get_articles(criterias, search) {
         ')'
       : null;
 
-  let query = `SELECT TOP 100 * FROM ARTICLE AS t 
-  JOIN TARIFarticlePrix AS x
-  ON t.Code_Article = x.Code_Article WHERE CODE_FAMILLE IN ( SELECT CODE_GAMME FROM zz_UtilGamme WHERE Code_Utilisateur= ${"'" +
+  let query = `SELECT TOP 100 * FROM ARTICLE AS t WHERE CODE_FAMILLE IN ( SELECT CODE_GAMME FROM zz_UtilGamme WHERE Code_Utilisateur= ${"'" +
     user.Code_Utilisateur +
     "'"})`;
 
@@ -74,9 +72,12 @@ export default async function get_articles(criterias, search) {
   }
 
   if (search.length > 0) {
-    console.log(search);
-    query = query + `AND t.Code_Article LIKE '%${search}%'`;
+    query =
+      query +
+      `AND t.Code_Article LIKE '%${search}%' OR t.Designation LIKE '%${search}%'`;
   }
+
+  query = query + 'ORDER BY t.Designation ASC';
 
   const results = await MSSQL.executeQuery(query);
   return results;

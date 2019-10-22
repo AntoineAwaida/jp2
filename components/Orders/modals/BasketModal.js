@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import _ from 'lodash';
+import get_price from '../../../requests/get_price';
+import logError from '../../Settings/logError';
 
 function isNormalInteger(str) {
   var n = Math.floor(Number(str));
@@ -62,11 +64,23 @@ class BasketModal extends React.Component {
     }
   };
 
-  chooseArticle() {
-    const article = {...this.state.article, quantity: this.state.quantity};
-    this.setState({quantity: 1}, () => {
-      this.props.toggleBasketModal(article);
-    });
+  async chooseArticle() {
+    try {
+      const price = await get_price(this.state.article, this.state.quantity);
+      const article = {
+        ...this.state.article,
+        quantity: this.state.quantity,
+        price: price,
+      };
+      this.setState({quantity: 1}, () => {
+        this.props.toggleBasketModal(article);
+      });
+    } catch (e) {
+      logError(e);
+      console.log(e);
+      console.log('Unable to reach database.');
+      //afficher erreur
+    }
   }
 
   incQuantity() {

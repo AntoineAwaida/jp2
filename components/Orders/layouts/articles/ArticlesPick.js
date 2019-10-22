@@ -82,19 +82,13 @@ export default class ArticlesPick extends Component {
                 }
                 data.push(article);
               }
+              console.log(this.props.criterias.famille.length);
 
               this.setState(
                 {
                   availableArticles: data,
                   isLoading: false,
-                  resultmsg:
-                    this.props.criterias.famille.length > 0 ||
-                    this.props.criterias.sous_famille.length > 0 ||
-                    this.props.criterias.gamme.length > 0 ||
-                    this.props.criterias.qualite.length > 0 ||
-                    this.state.search.length > 0
-                      ? 'No criteria selected, or search input entered. Please select criteria or enter code or designation of article, then press Search button above.'
-                      : 'No results found.',
+                  resultmsg: 'No results found.',
                 },
                 () => {
                   this.props.ee.emit('articlesSearched');
@@ -115,7 +109,11 @@ export default class ArticlesPick extends Component {
               logError(err);
             });
         })
-      : this.setState({availableArticles: []});
+      : this.setState({
+          availableArticles: [],
+          resultmsg:
+            'No criteria selected, or search input entered. Please select criteria or enter code or designation of article, then press Search button above.',
+        });
   }
 
   render() {
@@ -147,40 +145,62 @@ export default class ArticlesPick extends Component {
                 ee={this.props.ee}
               />
 
-              <View style={styles.list}>
+              <View>
                 {!this.state.isLoading ? (
                   this.state.availableArticles.length > 0 ? (
-                    this.state.availableArticles.map((article, index) => (
-                      <View style={styles.articleContainer} key={index}>
+                    <View>
+                      {this.state.availableArticles.length === 100 && (
                         <View
-                          style={[
-                            styles.article,
-                            {
-                              opacity: _.find(this.props.articles, article)
-                                ? 0.3
-                                : 1,
-                              backgroundColor: article.color,
-                            },
-                          ]}>
-                          <TouchableOpacity
-                            disabled={
-                              _.find(this.props.articles, article)
-                                ? true
-                                : false
-                            }
-                            onPress={() => this.selectArticle(article)}>
-                            <Text style={styles.textArticle}>
-                              {article.Designation &&
-                                article.Designation.slice(0, 36)}
-                            </Text>
-                            <Text style={styles.textArticle}>
-                              {article.Code_Article &&
-                                article.Code_Article.slice(-4)}
-                            </Text>
-                          </TouchableOpacity>
+                          style={{
+                            justifyContent: 'center',
+                          }}>
+                          <Button
+                            buttonStyle={{
+                              paddingHorizontal: 10,
+                              paddingVertical: 0,
+                              marginTop: 10,
+                              marginHorizontal: 10,
+                              backgroundColor: 'red',
+                            }}
+                            titleStyle={{color: 'white', fontSize: 12}}
+                            title="More than 100 results. Please refine your search."></Button>
                         </View>
+                      )}
+
+                      <View style={styles.list}>
+                        {this.state.availableArticles.map((article, index) => (
+                          <View style={styles.articleContainer} key={index}>
+                            <View
+                              style={[
+                                styles.article,
+                                {
+                                  opacity: _.find(this.props.articles, article)
+                                    ? 0.3
+                                    : 1,
+                                  backgroundColor: article.color,
+                                },
+                              ]}>
+                              <TouchableOpacity
+                                disabled={
+                                  _.find(this.props.articles, article)
+                                    ? true
+                                    : false
+                                }
+                                onPress={() => this.selectArticle(article)}>
+                                <Text style={styles.textArticle}>
+                                  {article.Designation &&
+                                    article.Designation.slice(0, 36)}
+                                </Text>
+                                <Text style={styles.textArticle}>
+                                  {article.Code_Article &&
+                                    article.Code_Article.slice(-4)}
+                                </Text>
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                        ))}
                       </View>
-                    ))
+                    </View>
                   ) : (
                     <View style={{flex: 1, alignItems: 'center'}}>
                       <Button

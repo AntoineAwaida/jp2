@@ -112,7 +112,9 @@ export default class ArticlesList extends Component {
                   <ListItem
                     key={item.Code_Article}
                     title={item.Designation}
-                    subtitle={'Quantity: ' + item.quantity}
+                    subtitle={
+                      'Quantity: ' + item.quantity + '\nPrice: ' + item.price
+                    }
                     subtitleStyle={{fontWeight: 'bold'}}
                     rightIcon={
                       <View>

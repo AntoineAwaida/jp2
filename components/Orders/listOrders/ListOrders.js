@@ -8,6 +8,8 @@ import {ListItem} from 'react-native-elements';
 
 import PropTypes from 'prop-types';
 import logError from '../../Settings/logError';
+import get_orders from '../../../requests/get_orders';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default class ListOrders extends Component {
   static navigationOptions = {
@@ -22,26 +24,20 @@ export default class ListOrders extends Component {
     };
   }
 
-  componentDidMount() {
-    DB.getDatabase()
-      .then(db => {
-        db.transaction(tx => {
-          tx.executeSql(
-            `SELECT p.DateCreation, p.Code_Commande,p.MontantAcompte, c.RaisonSociale FROM pct_COMMANDE AS p JOIN CLIENT AS c ON p.Code_Client = c.Code_Client`,
-            [],
-            (tx, results) => {
-              let data = [];
-              for (let i = 0; i < results.rows.length; i++) {
-                data.push(results.rows.item(i));
-              }
-              this.setState({commandes: data, isLoading: false});
-            },
-          );
-        });
+  getCommandes() {
+    get_orders()
+      .then(res => {
+        this.setState({commandes: res, isLoading: false});
       })
       .catch(err => {
         logError(err);
+        console.log(err);
+        this.setState({isLoading: false});
       });
+  }
+
+  componentDidMount() {
+    this.getCommandes();
   }
   renderSeparator = () => {
     return (
@@ -56,6 +52,7 @@ export default class ListOrders extends Component {
   };
 
   render() {
+    console.log(this.state.commandes);
     return this.state.isLoading ? (
       <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
         <ActivityIndicator size="large" color="#FF4747" />
@@ -67,26 +64,49 @@ export default class ListOrders extends Component {
     ) : (
       <ScrollView>
         <FlatList
-          keyExtractor={item => item.Code_Commande.toString()}
+          keyExtractor={item => item.id.toString()}
           data={this.state.commandes.reverse()}
           ItemSeparatorComponent={this.renderSeparator}
           renderItem={({item}) => (
             <ListItem
+              leftElement={
+                <FontAwesome5Icon
+                  size={30}
+                  color="#D5D3D3"
+                  name="chevron-right"></FontAwesome5Icon>
+              }
               onPress={() =>
                 this.props.navigation.navigate('ViewOrder', {
-                  Code_Commande: item.Code_Commande,
+                  Code_Commande: item.id,
+                  save: false,
                 })
               }
-              titleStyle={{fontWeight: 'bold', color: '#571db2'}}
-              key={item.Code_Commande}
+              titleStyle={{
+                textAlign: 'right',
+                fontWeight: 'bold',
+                color: '#ff4747',
+              }}
+              key={item.id}
               subtitle={
                 <View>
-                  <Text>{item.MontantAcompte}</Text>
+                  <Text style={{textAlign: 'right'}}>
+                    {item.MontantAcompte + ' $'}
+                  </Text>
                   <Text style={{textAlign: 'right'}}>{item.RaisonSociale}</Text>
-                  <Text>{item.DateCreation.toString()}</Text>
+                  <Text style={{textAlign: 'right'}}>
+                    {item.DateCreation.toString()}
+                  </Text>
+                  <Text
+                    style={{
+                      textAlign: 'right',
+                      fontWeight: 'bold',
+                      color: item.status === 'pending' ? 'orange' : 'green',
+                    }}>
+                    {item.status.charAt(0).toUpperCase() + item.status.slice(1)}
+                  </Text>
                 </View>
               }
-              title={'Order #' + item.Code_Commande}
+              title={'Order #' + item.id}
             />
           )}
         />
