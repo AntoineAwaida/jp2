@@ -25,6 +25,12 @@ export default class SearchCriterias extends Component {
     });
   }
 
+  componentDidMount() {
+    this.props.ee.on('resetCriteria', () => {
+      this.setState({displaySelect: false});
+    });
+  }
+
   render() {
     return (
       <View>
