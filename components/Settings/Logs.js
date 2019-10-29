@@ -44,9 +44,12 @@ class Logs extends Component {
 
   async componentDidMount() {
     const errors = await AsyncStorage.getItem('logs');
-    this.setState({logs: JSON.parse(errors), isLoading: false}, () => {
-      this.props.navigation.setParams({logs: this.state.logs});
-    });
+    this.setState(
+      {logs: JSON.parse(errors).reverse(), isLoading: false},
+      () => {
+        this.props.navigation.setParams({logs: this.state.logs});
+      },
+    );
   }
 
   renderSeparator = () => {
@@ -78,7 +81,7 @@ class Logs extends Component {
           ItemSeparatorComponent={this.renderSeparator}
           renderItem={({item}) => (
             <ListItem
-              titleStyle={{fontWeight: 'bold', color: '#571db2'}}
+              titleStyle={{fontWeight: 'bold', color: '#FF4747'}}
               key={item.date}
               subtitle={
                 <View>

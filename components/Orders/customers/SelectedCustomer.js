@@ -96,6 +96,24 @@ class SelectedCustomer extends Component {
         <View
           style={{flex: 0.4, justifyContent: 'center', alignItems: 'flex-end'}}>
           <Button
+            onPress={() => {
+              this.props.emitter.emit('resetCriteria');
+            }}
+            icon={
+              <FontAwesome5
+                name="sync-alt"
+                solid
+                color="white"
+                size={12}></FontAwesome5>
+            }
+            title="   Reset filters"
+            buttonStyle={{
+              backgroundColor: '#d5d3d3',
+              borderRadius: 20,
+              padding: 5,
+              marginBottom: 3,
+            }}></Button>
+          <Button
             disabled={this.state.searching}
             loading={this.state.searching}
             onPress={() => {
@@ -106,13 +124,14 @@ class SelectedCustomer extends Component {
                 name="search"
                 solid
                 color="white"
-                size={18}></FontAwesome5>
+                size={12}></FontAwesome5>
             }
-            title="   Search"
+            title="       Search     "
             buttonStyle={{
               backgroundColor: '#ff4747',
               borderRadius: 20,
-              padding: 10,
+              padding: 5,
+              marginTop: 3,
             }}></Button>
         </View>
       </View>

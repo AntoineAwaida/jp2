@@ -1,34 +1,39 @@
-import React, { Component } from "react";
+import React, {Component} from 'react';
 
-import { Animated } from "react-native";
+import {Animated} from 'react-native';
 
-import PropTypes from "prop-types";
-import Alert from "./Alert";
+import PropTypes from 'prop-types';
+import Alert from './Alert';
 
 class BottomMessage extends Component {
   constructor(props, context) {
     super(props, context);
     this.state = {
-      bottomPosition: new Animated.Value(-100)
+      bottomPosition: new Animated.Value(-100),
+      error: false,
+      message: null,
     };
   }
 
   componentDidMount() {
-    this.props.emitter.addListener("trigger-message", () => {
-      Animated.sequence([
-        Animated.delay(300),
-        Animated.spring(this.state.bottomPosition, {
-          toValue: 0,
-          speed: 3,
-          bounciness: 5
-        }),
-        Animated.delay(600),
-        Animated.spring(this.state.bottomPosition, {
-          toValue: -100,
-          speed: 1,
-          bounciness: 6
-        })
-      ]).start();
+    this.props.emitter.addListener('trigger-message', ({error, message}) => {
+      console.log('triggered');
+      this.setState({error, message}, () => {
+        Animated.sequence([
+          Animated.delay(300),
+          Animated.spring(this.state.bottomPosition, {
+            toValue: 0,
+            speed: 3,
+            bounciness: 5,
+          }),
+          Animated.delay(600),
+          Animated.spring(this.state.bottomPosition, {
+            toValue: -100,
+            speed: 1,
+            bounciness: 6,
+          }),
+        ]).start();
+      });
     });
   }
 
@@ -36,17 +41,16 @@ class BottomMessage extends Component {
     return (
       <Animated.View
         style={{
-          position: "absolute",
+          position: 'absolute',
           zIndex: 10,
-          width: "100%",
+          width: '100%',
           height: 60,
-          bottom: this.state.bottomPosition
-        }}
-      >
+          bottom: this.state.bottomPosition,
+        }}>
         <Alert
-          color={"white"}
-          backgroundColor={this.props.error ? "red" : "green"}
-          msg={this.props.msg}
+          color={'white'}
+          backgroundColor={this.state.error ? 'red' : 'green'}
+          msg={this.state.message}
         />
       </Animated.View>
     );
@@ -54,9 +58,7 @@ class BottomMessage extends Component {
 }
 
 BottomMessage.propTypes = {
-  error: PropTypes.bool,
-  msg: PropTypes.string,
-  emitter: PropTypes.any
+  emitter: PropTypes.any,
 };
 
 export default BottomMessage;

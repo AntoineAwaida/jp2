@@ -9,9 +9,6 @@ import PropTypes from 'prop-types';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-import save from '../saveOrder';
-import {DB} from '../../../database/database';
-
 import AsyncStorage from '@react-native-community/async-storage';
 import getPrice from './getPrice';
 import logError from '../../Settings/logError';
@@ -31,12 +28,14 @@ function Checkout(props) {
         price,
         props.articles,
       );
+
       props.navigation.navigate('ViewOrder', {
         Code_Commande: result,
         save: true,
         emitter: props.emitter,
       });
     } catch (e) {
+      props.emitter.emit('trigger-message', {error: true, message: e.message});
       logError(e);
       console.log(e);
     } finally {

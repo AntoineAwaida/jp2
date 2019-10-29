@@ -6,7 +6,6 @@ import {Button, ActivityIndicator} from 'react-native-paper';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {DB} from '../../database/database';
 
 import {EventEmitter} from 'events';
 import BottomMessage from '../Layout/Alert/bottomMessage';
@@ -24,8 +23,6 @@ class Login extends Component {
     this.state = {
       username: null,
       password: null,
-      error: false,
-      message: null,
       isLoading: false,
       isRetrievingUser: true,
     };
@@ -77,11 +74,12 @@ class Login extends Component {
               this.setState(
                 {
                   isLoading: false,
-                  error: true,
-                  message: err.message,
                 },
                 () => {
-                  this._emitter.emit('trigger-message');
+                  this._emitter.emit('trigger-message', {
+                    error: true,
+                    message: err.message,
+                  });
                 },
               );
             })
@@ -96,12 +94,13 @@ class Login extends Component {
           })
         : this.setState(
             {
-              error: true,
               isLoading: false,
-              message: 'Wrong username or password!',
             },
             () => {
-              this._emitter.emit('trigger-message');
+              this._emitter.emit('trigger-message', {
+                error: true,
+                message: 'Wrong username or password!',
+              });
             },
           );
     });
@@ -157,11 +156,7 @@ class Login extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <BottomMessage
-          msg={this.state.message}
-          error={this.state.error}
-          emitter={this._emitter}
-        />
+        <BottomMessage emitter={this._emitter} />
       </>
     );
   }

@@ -76,11 +76,12 @@ class Settings extends Component {
             {
               isTesting: false,
               connSuccessful: false,
-              message: 'Error while connecting to the remote database.',
-              error: true,
             },
             () => {
-              this._emitter.emit('trigger-message');
+              this._emitter.emit('trigger-message', {
+                message: 'Error while connecting to the remote database.',
+                error: true,
+              });
             },
           );
         });
@@ -96,12 +97,11 @@ class Settings extends Component {
       this.state.port,
       this.state.depot,
     );
-    this.setState(
-      {message: 'Credentials successfully updated', error: false},
-      () => {
-        this._emitter.emit('trigger-message');
-      },
-    );
+
+    this._emitter.emit('trigger-message', {
+      message: 'Credentials successfully updated',
+      error: false,
+    });
   }
 
   changePort(port) {
@@ -144,8 +144,8 @@ class Settings extends Component {
             <View style={style.logContainer}>
               <TouchableOpacity
                 onPress={() => this.props.navigation.navigate('Logs')}>
-                <Button mode="text">
-                  <FontAwesome5 name="bars" /> Logs
+                <Button color="#ff4747" mode="text">
+                  <FontAwesome5 name="bars" color="#ff4747" /> Logs
                 </Button>
               </TouchableOpacity>
             </View>
@@ -294,11 +294,7 @@ class Settings extends Component {
           </ScrollView>
         </View>
 
-        <BottomMessage
-          msg={this.state.message}
-          error={this.state.error}
-          emitter={this._emitter}
-        />
+        <BottomMessage emitter={this._emitter} />
       </>
     );
   }

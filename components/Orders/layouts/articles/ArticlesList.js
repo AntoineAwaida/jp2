@@ -113,7 +113,10 @@ export default class ArticlesList extends Component {
                     key={item.Code_Article}
                     title={item.Designation}
                     subtitle={
-                      'Quantity: ' + item.quantity + '\nPrice: ' + item.price
+                      'Quantity: ' +
+                      item.quantity +
+                      '\nPrice: ' +
+                      Math.round(item.price * 100) / 100
                     }
                     subtitleStyle={{fontWeight: 'bold'}}
                     rightIcon={

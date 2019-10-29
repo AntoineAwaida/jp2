@@ -99,9 +99,9 @@ const TabNavigator = createBottomTabNavigator(
 
 const TabAdminNavigator = createBottomTabNavigator(
   {
-    Orders: {
-      screen: OrderNavigator,
-    },
+    // Orders: {
+    //   screen: OrderNavigator,
+    // },
 
     // Map: {
     //   screen: Map

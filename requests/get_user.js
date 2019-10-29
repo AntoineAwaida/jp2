@@ -6,7 +6,7 @@ export default async function get_user(user) {
     const connection = await connect();
 
     user = "'" + user + "'";
-    let query = `SELECT Nom, Code_Utilisateur, Code_Groupe FROM zz_Util WHERE Nom = ${user} `;
+    let query = `SELECT Nom, Code_Utilisateur, Code_Groupe FROM zz_Util WHERE Code_Utilisateur = ${user} `;
     const results = await MSSQL.executeQuery(query);
     return results;
   } catch (e) {

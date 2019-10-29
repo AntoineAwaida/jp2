@@ -26,6 +26,7 @@ class BasketModal extends React.Component {
       errorQuantity: false,
       quantity: 1,
       article: null,
+      message: null,
     };
     this.boundSelectArticle = e => this.selectArticle(e);
   }
@@ -53,9 +54,9 @@ class BasketModal extends React.Component {
   }
 
   handleQuantity = e => {
-    if (isNormalInteger(e)) {
+    if (!isNaN(e)) {
       if (e != '0') {
-        this.setState({quantity: parseInt(e), errorQuantity: false});
+        this.setState({quantity: e, errorQuantity: false});
       } else {
         this.setState({quantity: 0, errorQuantity: false});
       }
@@ -65,6 +66,7 @@ class BasketModal extends React.Component {
   };
 
   async chooseArticle() {
+    this.setState({message: null});
     try {
       const price = await get_price(this.state.article, this.state.quantity);
       const article = {
@@ -79,19 +81,30 @@ class BasketModal extends React.Component {
       logError(e);
       console.log(e);
       console.log('Unable to reach database.');
+      this.setState(
+        {
+          message:
+            'Unable to reach database. Please press Cancel and try again.',
+        },
+        () => {
+          setTimeout(() => {
+            this.setState({message: null});
+          }, 2000);
+        },
+      );
       //afficher erreur
     }
   }
 
   incQuantity() {
     if (this.state.quantity || this.state.quantity == 0) {
-      this.setState({quantity: this.state.quantity + 1});
+      this.setState({quantity: parseFloat(this.state.quantity) + 1});
     }
   }
 
   decQuantity() {
     if (this.state.quantity || this.state.quantity == 0) {
-      this.setState({quantity: this.state.quantity - 1});
+      this.setState({quantity: parseFloat(this.state.quantity) - 1});
     }
   }
 
@@ -174,6 +187,15 @@ class BasketModal extends React.Component {
                     : null
                 }
               />
+              <View
+                style={{
+                  flex: 1,
+                  alignItems: 'center',
+                  justifyContent: 'flex-end',
+                  marginBottom: 20,
+                }}>
+                <Text style={{color: 'red'}}>{this.state.message}</Text>
+              </View>
             </View>
             <View style={{flex: 1}} />
           </View>

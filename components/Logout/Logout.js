@@ -14,11 +14,6 @@ class Logout extends Component {
   constructor(props, context) {
     super(props, context);
     this._emitter = new EventEmitter();
-
-    this.state = {
-      error: false,
-      message: null,
-    };
   }
 
   async _logout() {
@@ -42,11 +37,7 @@ class Logout extends Component {
             </Button>
           </TouchableOpacity>
         </View>
-        <BottomMessage
-          msg={this.state.message}
-          error={this.state.error}
-          emitter={this._emitter}
-        />
+        <BottomMessage emitter={this._emitter} />
       </>
     );
   }

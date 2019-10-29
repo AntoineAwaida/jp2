@@ -45,6 +45,11 @@ export default class CriteriaModal extends Component {
           this.setState({criteria: res, isLoading: false});
         })
         .catch(e => {
+          this.setState({isLoading: false});
+          this.props.ee.emit('trigger-message', {
+            error: true,
+            message: e.message,
+          });
           logError(e);
           console.log(e);
         });

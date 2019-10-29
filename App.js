@@ -10,7 +10,6 @@ import React, {Component} from 'react';
 
 import {PermissionsAndroid, View, Text} from 'react-native';
 
-import {DB} from './database/database';
 import AsyncStorage from '@react-native-community/async-storage';
 import Navigation from './components/Navigation/Navigation';
 import {ActivityIndicator} from 'react-native-paper';
@@ -21,17 +20,6 @@ export default class App extends Component {
     this.state = {
       granted: null,
     };
-  }
-
-  async testDBConnection() {
-    DB.getDatabase()
-      .then(db => {
-        console.log(db);
-      })
-      .catch(err => {
-        console.log(err);
-        logError(err.message);
-      });
   }
 
   async createTables() {

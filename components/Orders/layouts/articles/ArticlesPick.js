@@ -1,8 +1,6 @@
 import React, {Component} from 'react';
 
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import {DB} from '../../../../database/database';
-import {ScrollView} from 'react-native-gesture-handler';
 
 import PropTypes from 'prop-types';
 
@@ -11,7 +9,6 @@ import {ActivityIndicator} from 'react-native-paper';
 import {SearchBar, Button} from 'react-native-elements';
 import logError from '../../../Settings/logError';
 import get_articles from '../../../../requests/get_articles';
-import BottomMessage from '../../../Layout/Alert/bottomMessage';
 
 import SearchCriterias from './searchCriterias';
 
@@ -72,6 +69,7 @@ export default class ArticlesPick extends Component {
           this.props.ee.emit('searchingArticles');
           get_articles(this.props.criterias, this.state.search)
             .then(articles => {
+              console.log(articles);
               let data = [];
               for (let i = 0; i < articles.length; i++) {
                 let article = articles[i];
@@ -82,7 +80,6 @@ export default class ArticlesPick extends Component {
                 }
                 data.push(article);
               }
-              console.log(this.props.criterias.famille.length);
 
               this.setState(
                 {
@@ -96,16 +93,13 @@ export default class ArticlesPick extends Component {
               );
             })
             .catch(err => {
-              console.log(err);
-              this.setState(
-                {
+              this.setState(() => {
+                this.props.ee.emit('trigger-message', {
                   error: true,
                   message: 'Unable to get articles from database.',
-                },
-                () => {
-                  this.props.ee.emit('trigger-message');
-                },
-              );
+                });
+                this.props.ee.emit('articlesSearched');
+              });
               logError(err);
             });
         })
@@ -197,6 +191,17 @@ export default class ArticlesPick extends Component {
                                 </Text>
                               </TouchableOpacity>
                             </View>
+                            {article.nomenclature && (
+                              <View
+                                style={{
+                                  height: 10,
+                                  width: 10,
+                                  backgroundColor: '#00b5ad',
+                                  position: 'absolute',
+                                  right: 0,
+                                  borderRadius: 50,
+                                }}></View>
+                            )}
                           </View>
                         ))}
                       </View>
@@ -230,13 +235,6 @@ export default class ArticlesPick extends Component {
             </View>
           </View>
         </View>
-
-        <BottomMessage
-          style={{bottom: 0, position: 'absolute'}}
-          msg={this.state.message}
-          error={this.state.error}
-          emitter={this.props.ee}
-        />
       </>
     );
   }

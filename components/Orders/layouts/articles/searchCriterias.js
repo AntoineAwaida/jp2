@@ -59,8 +59,9 @@ export default class SearchCriterias extends Component {
             }}>
             <TouchableOpacity
               onLongPress={() => {
-                this.state.displaySelect !== 'famille' &&
+                this.setState({displaySelect: false}, () => {
                   this.cancelCriteria('famille');
+                });
               }}
               onPress={() => {
                 this.selectCriteria('famille');
@@ -94,8 +95,9 @@ export default class SearchCriterias extends Component {
             }}>
             <TouchableOpacity
               onLongPress={() => {
-                this.state.displaySelect !== 'sous_famille' &&
+                this.setState({displaySelect: false}, () => {
                   this.cancelCriteria('sous_famille');
+                });
               }}
               onPress={() => {
                 this.selectCriteria('sous_famille');
@@ -128,8 +130,9 @@ export default class SearchCriterias extends Component {
             }}>
             <TouchableOpacity
               onLongPress={() => {
-                this.state.displaySelect !== 'gamme' &&
+                this.setState({displaySelect: false}, () => {
                   this.cancelCriteria('gamme');
+                });
               }}
               onPress={() => {
                 this.selectCriteria('gamme');
@@ -158,8 +161,9 @@ export default class SearchCriterias extends Component {
             }}>
             <TouchableOpacity
               onLongPress={() => {
-                this.state.displaySelect !== 'qualite' &&
+                this.setState({displaySelect: false}, () => {
                   this.cancelCriteria('qualite');
+                });
               }}
               onPress={() => {
                 this.selectCriteria('qualite');

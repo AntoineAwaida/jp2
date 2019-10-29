@@ -1,19 +1,15 @@
 import React, {Component} from 'react';
-import Modal from 'react-native-modal';
 
-import {View, Text} from 'react-native';
-import {SearchBar, ListItem, Button} from 'react-native-elements';
+import {View} from 'react-native';
+import {SearchBar, ListItem} from 'react-native-elements';
 import {FlatList} from 'react-native-gesture-handler';
 
 import PropTypes from 'prop-types';
-import {DB} from '../../../database/database';
+
 import {ActivityIndicator} from 'react-native-paper';
 
-import LinearGradient from 'react-native-linear-gradient';
 import logError from '../../Settings/logError';
 
-import {EventEmitter} from 'events';
-import BottomMessage from '../../Layout/Alert/bottomMessage';
 import get_clients from '../../../requests/get_clients';
 
 class Customers extends Component {
@@ -23,11 +19,8 @@ class Customers extends Component {
       matchingCustomers: [],
       isLoading: false,
       search: null,
-      message: null,
-      error: false,
     };
     this.tiemout = 0;
-    this._emitter = new EventEmitter();
   }
 
   selectCustomer(customer) {
@@ -47,15 +40,12 @@ class Customers extends Component {
               this.setState({matchingCustomers: result, isLoading: false});
             })
             .catch(err => {
-              this.setState(
-                {
-                  error: true,
-                  message: 'Unable to get clients from database.',
-                },
-                () => {
-                  this._emitter.emit('trigger-message');
-                },
-              );
+              this.setState({isLoading: false});
+              this.props.emitter.emit('trigger-message', {
+                error: true,
+                message: err.message,
+              });
+
               logError(err);
             });
         });
@@ -102,13 +92,6 @@ class Customers extends Component {
             )}
           </View>
         </View>
-
-        <BottomMessage
-          style={{bottom: 0, position: 'absolute'}}
-          msg={this.state.message}
-          error={this.state.error}
-          emitter={this._emitter}
-        />
       </>
     );
   }

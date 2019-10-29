@@ -14,7 +14,7 @@ export default async function connect() {
     return await MSSQL.connect(config);
   } catch (e) {
     throw Error(
-      'No credentials provided. Please login as admin and set credentials first.',
+      'Error while connecting to the database. Check your internet connection.',
     );
   }
 }

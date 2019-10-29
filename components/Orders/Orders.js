@@ -30,6 +30,7 @@ import logError from '../Settings/logError';
 import withBadge from './withBadge';
 import Geolocation from 'react-native-geolocation-service';
 import Dimmer from './modals/Dimmer';
+import BottomMessage from '../Layout/Alert/bottomMessage';
 
 const EventEmitter = require('events');
 
@@ -122,9 +123,32 @@ class Orders extends Component {
   listenEvents() {
     this.ee.on('clearOffer', () => this.clearOffer());
 
+    this.ee.on('clearSelection', () => {
+      this.setState({
+        criteria: {
+          famille: [],
+          sous_famille: [],
+          gamme: [],
+          qualite: [],
+        },
+        articles: [],
+      });
+    });
+
     this.ee.on('showDimmer', () => this.setState({showDimmer: true}));
 
     this.ee.on('dismissDimmer', () => this.setState({showDimmer: false}));
+
+    this.ee.on('resetCriteria', () => {
+      this.setState({
+        criteria: {
+          famille: [],
+          sous_famille: [],
+          gamme: [],
+          qualite: [],
+        },
+      });
+    });
 
     this.ee.on('criteriaSelected', criteria => {
       this.setState({
@@ -259,94 +283,101 @@ class Orders extends Component {
   render() {
     console.log(this.state.GPS);
     return (
-      <View style={{flex: 1, backgroundColor: 'rgba(255, 71, 71, .2)'}}>
-        <SafeAreaView style={style.contain}>
-          <BasketModal
-            article={this.state.article}
-            isVisible={this.state.isBasketModalVisible}
-            ee={this.ee}
-            toggleBasketModal={e => this.toggleBasketModal(e)}
-          />
+      <>
+        <View style={{flex: 1, backgroundColor: 'rgba(213, 211, 211, .2)'}}>
+          <SafeAreaView style={style.contain}>
+            <BasketModal
+              article={this.state.article}
+              isVisible={this.state.isBasketModalVisible}
+              ee={this.ee}
+              toggleBasketModal={e => this.toggleBasketModal(e)}
+            />
 
-          <Dimmer
-            isVisible={this.state.showDimmer}
-            msg={'Saving order, please wait...'}
-          />
+            <Dimmer
+              isVisible={this.state.showDimmer}
+              msg={'Saving order, please wait...'}
+            />
 
-          {!this.state.customer ? (
-            <ScrollView style={style.selectCustomercontainer}>
-              <View
-                style={{
-                  flex: 0.1,
-                  justifyContent: 'flex-start',
-                  alignItems: 'flex-start',
-                }}>
-                <Badge
-                  containerStyle={{margin: 5, padding: 5}}
-                  badgeStyle={{
-                    margin: 5,
-                    padding: 15,
-                    backgroundColor: '#ff4747',
-                  }}
-                  value={
-                    <Text style={{color: 'white', fontSize: 15}}>
-                      Select a customer.
-                    </Text>
-                  }></Badge>
-              </View>
-
-              <View
-                style={{
-                  flex: 1,
-
-                  flexDirection: 'row',
-                }}>
-                <Customers
-                  emitter={this.ee}
-                  selectCustomer={this.selectCustomer}
-                />
-              </View>
-            </ScrollView>
-          ) : (
-            <Animated.View
-              style={{flex: 1, opacity: this.state.articlesPickOpacity}}>
+            {!this.state.customer ? (
               <ScrollView style={style.selectCustomercontainer}>
-                <View style={style.customerContainer}>
-                  <SelectedCustomer
-                    emitter={this.ee}
-                    customer={this.state.customer}
-                    cancelCustomer={this.cancelCustomer}
-                  />
+                <View
+                  style={{
+                    flex: 0.1,
+                    justifyContent: 'flex-start',
+                    alignItems: 'flex-start',
+                  }}>
+                  <Badge
+                    containerStyle={{margin: 5, padding: 5}}
+                    badgeStyle={{
+                      margin: 5,
+                      padding: 15,
+                      backgroundColor: '#ff4747',
+                    }}
+                    value={
+                      <Text style={{color: 'white', fontSize: 15}}>
+                        Select a customer.
+                      </Text>
+                    }></Badge>
                 </View>
-                <View style={style.shoppingCardContainer}>
-                  <View style={style.listArticles}></View>
-                  <View style={style.pickArticles}>
-                    <ArticlesPick
-                      criterias={this.state.criteria}
-                      articles={this.state.articles}
-                      ee={this.ee}
-                      toggleBasketModal={e => this.toggleBasketModal(e)}
-                      toggleCriteriaModal={e => this.toggleCriteriaModal(e)}
-                    />
-                  </View>
+
+                <View
+                  style={{
+                    flex: 1,
+
+                    flexDirection: 'row',
+                  }}>
+                  <Customers
+                    emitter={this.ee}
+                    selectCustomer={this.selectCustomer}
+                  />
                 </View>
               </ScrollView>
-              {
-                <View style={{flex: 0.1}}>
-                  <Checkout
-                    emitter={this.ee}
-                    clearOffer={() => this.clearOffer()}
-                    articles={this.state.articles}
-                    navigation={this.props.navigation}
-                    customer={this.state.customer}
-                    GPS={this.state.GPS}
-                  />
-                </View>
-              }
-            </Animated.View>
-          )}
-        </SafeAreaView>
-      </View>
+            ) : (
+              <Animated.View
+                style={{flex: 1, opacity: this.state.articlesPickOpacity}}>
+                <ScrollView style={style.selectCustomercontainer}>
+                  <View style={style.customerContainer}>
+                    <SelectedCustomer
+                      emitter={this.ee}
+                      customer={this.state.customer}
+                      cancelCustomer={this.cancelCustomer}
+                    />
+                  </View>
+                  <View style={style.shoppingCardContainer}>
+                    <View style={style.listArticles}></View>
+                    <View style={style.pickArticles}>
+                      <ArticlesPick
+                        criterias={this.state.criteria}
+                        articles={this.state.articles}
+                        ee={this.ee}
+                        toggleBasketModal={e => this.toggleBasketModal(e)}
+                        toggleCriteriaModal={e => this.toggleCriteriaModal(e)}
+                      />
+                    </View>
+                  </View>
+                </ScrollView>
+                {
+                  <View style={{flex: 0.1}}>
+                    <Checkout
+                      emitter={this.ee}
+                      clearOffer={() => this.clearOffer()}
+                      articles={this.state.articles}
+                      navigation={this.props.navigation}
+                      customer={this.state.customer}
+                      GPS={this.state.GPS}
+                    />
+                  </View>
+                }
+              </Animated.View>
+            )}
+          </SafeAreaView>
+        </View>
+
+        <BottomMessage
+          style={{bottom: 0, position: 'absolute'}}
+          emitter={this.ee}
+        />
+      </>
     );
   }
 }
