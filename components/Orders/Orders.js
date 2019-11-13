@@ -44,8 +44,8 @@ class Orders extends Component {
       headerLeft: params.articles && params.articles.length > 0 && (
         <BadgedIcon
           style={{marginLeft: 10}}
-          color="#FF4747"
-          name="shopping-cart"
+          color='#FF4747'
+          name='shopping-cart'
           size={30}
           onPress={() =>
             navigation.navigate('ArticlesList', {
@@ -58,8 +58,8 @@ class Orders extends Component {
       headerRight: (
         <FontAwesome5
           style={{marginRight: 20}}
-          color="#FF4747"
-          name="history"
+          color='#FF4747'
+          name='history'
           size={30}
           onPress={() => navigation.navigate('ListOrders')}
         />
@@ -147,6 +147,7 @@ class Orders extends Component {
           gamme: [],
           qualite: [],
         },
+        articles: [],
       });
     });
 
