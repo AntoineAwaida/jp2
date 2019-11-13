@@ -203,23 +203,18 @@ export default class ViewOrder extends Component {
                               </Text>
                             ) : (
                               <View>
-                                <FontAwesome5
-                                  color={
-                                    item.QuantiteInitiale != item.Quantite &&
-                                    'white'
-                                  }
-                                  name="dollar-sign">
-                                  <Text
-                                    style={{
-                                      color:
-                                        item.QuantiteInitiale !=
-                                          item.Quantite && 'white',
-                                    }}>
-                                    {Math.round(
-                                      item.Quantite * item.PrixUnitaire * 100,
-                                    ) / 100}
-                                  </Text>
-                                </FontAwesome5>
+                                <Text
+                                  style={{
+                                    color:
+                                      item.QuantiteInitiale != item.Quantite &&
+                                      'white',
+                                  }}>
+                                  {Math.round(
+                                    item.Quantite * item.PrixUnitaire * 100,
+                                  ) / 100}{' '}
+                                  LYD
+                                </Text>
+
                                 {item.Quantite != item.QuantiteInitiale && (
                                   <Text
                                     style={{
@@ -301,11 +296,12 @@ export default class ViewOrder extends Component {
                       alignItems: 'center',
                     }}>
                     <Text h4>Total amount : </Text>
-                    <FontAwesome5 name="dollar-sign" size={20} />
+
                     <Text h4>
                       {' ' +
                         Math.round(this.state.commande.MontantAcompte * 100) /
-                          100}
+                          100 +
+                        ' LYD'}
                     </Text>
                   </View>
                 </View>

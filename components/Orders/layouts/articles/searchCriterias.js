@@ -145,6 +145,7 @@ export default class SearchCriterias extends Component {
               }}>
               <Text
                 style={{
+                  fontSize: 12,
                   color:
                     this.state.displaySelect === 'gamme' ? 'white' : 'grey',
                 }}>
@@ -176,6 +177,7 @@ export default class SearchCriterias extends Component {
               }}>
               <Text
                 style={{
+                  fontSize: 12,
                   color:
                     this.state.displaySelect === 'qualite' ? 'white' : 'grey',
                 }}>

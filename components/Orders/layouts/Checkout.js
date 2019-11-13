@@ -72,9 +72,9 @@ function Checkout(props) {
           marginRight: 5,
         }}>
         <Button
-          mode='outlined'
+          mode="outlined"
           style={{borderColor: '#FF4747', borderWidth: 2}}
-          color='#FF4747'
+          color="#FF4747"
           onPress={() => {
             props.customer && props.articles.length > 0
               ? Alert.alert(
@@ -98,7 +98,7 @@ function Checkout(props) {
                   'Please select a client and at least an article in your basket.',
                 );
           }}>
-          <FontAwesome5 name='shopping-cart' color='#FF4747' size={15} />{' '}
+          <FontAwesome5 name="shopping-cart" color="#FF4747" size={15} />{' '}
           Checkout
         </Button>
       </View>
@@ -107,8 +107,9 @@ function Checkout(props) {
         style={{
           flexDirection: 'row',
           alignItems: 'center',
+          justifyContent: 'flex-end',
           flex: 0.6,
-          marginLeft: 10,
+          marginRight: 10,
         }}>
         <Text style={{color: '#FF4747'}} h3>
           {'  ' + price + ' LYD'}
