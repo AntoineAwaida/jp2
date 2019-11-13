@@ -148,7 +148,7 @@ export default class SearchCriterias extends Component {
                   color:
                     this.state.displaySelect === 'gamme' ? 'white' : 'grey',
                 }}>
-                Gamme{' '}
+                Sub-sub{' '}
                 {this.props.criterias.gamme.length > 0 &&
                   '(' + this.props.criterias.gamme.length + ')'}
               </Text>
@@ -179,7 +179,7 @@ export default class SearchCriterias extends Component {
                   color:
                     this.state.displaySelect === 'qualite' ? 'white' : 'grey',
                 }}>
-                Quality{' '}
+                Sub-sub-sub{' '}
                 {this.props.criterias.qualite.length > 0 &&
                   '(' + this.props.criterias.qualite.length + ')'}
               </Text>

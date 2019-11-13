@@ -143,7 +143,7 @@ export default class ListOrders extends Component {
               alignItems: 'center',
               marginTop: 30,
             }}>
-            <ActivityIndicator size="large" color="#FF4747" />
+            <ActivityIndicator size='large' color='#FF4747' />
           </View>
         ) : !this.state.commandes ? (
           <View
@@ -165,8 +165,8 @@ export default class ListOrders extends Component {
                 leftElement={
                   <FontAwesome5Icon
                     size={30}
-                    color="#D5D3D3"
-                    name="chevron-right"></FontAwesome5Icon>
+                    color='#D5D3D3'
+                    name='chevron-right'></FontAwesome5Icon>
                 }
                 onPress={() =>
                   this.props.navigation.navigate('ViewOrder', {
@@ -183,7 +183,7 @@ export default class ListOrders extends Component {
                 subtitle={
                   <View>
                     <Text style={{textAlign: 'right'}}>
-                      {item.MontantAcompte + ' $'}
+                      {item.MontantAcompte + ' LYD'}
                     </Text>
                     <Text style={{textAlign: 'right'}}>
                       {item.RaisonSociale}
