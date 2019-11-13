@@ -105,7 +105,7 @@ export default class ListOrders extends Component {
       })
       .catch(err => {
         logError(err);
-        console.log(err);
+
         this.setState({isLoading: false});
       });
   }

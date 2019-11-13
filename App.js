@@ -30,7 +30,6 @@ export default class App extends Component {
         // await create();
         AsyncStorage.setItem('createdtables', 'created');
       } catch (e) {
-        console.log(e);
         logError(e);
       }
     }

@@ -27,8 +27,6 @@ export default class CriteriaModal extends Component {
     });
     let get;
 
-    console.log(this.props.criteriaSelected);
-
     this.props.criteriaSelected === 'famille'
       ? (get = get_family)
       : this.props.criteriaSelected === 'sous_famille'
@@ -51,7 +49,6 @@ export default class CriteriaModal extends Component {
             message: e.message,
           });
           logError(e);
-          console.log(e);
         });
   }
 

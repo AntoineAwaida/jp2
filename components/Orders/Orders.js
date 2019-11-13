@@ -281,7 +281,6 @@ class Orders extends Component {
   }
 
   render() {
-    console.log(this.state.GPS);
     return (
       <>
         <View style={{flex: 1, backgroundColor: 'rgba(213, 211, 211, .2)'}}>

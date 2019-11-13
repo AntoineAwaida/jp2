@@ -18,8 +18,6 @@ export default async function get_orders(status, dates) {
         ')'
       : null;
 
-  console.log(statusrequested);
-
   let query = `SELECT c.RaisonSociale, i.status, i.DateCreation, i.MontantAcompte, i.id FROM ipad_COMMANDE AS i JOIN Client AS c ON i.Code_Client = c.Code_Client WHERE Code_Util = ${"'" +
     user.Code_Utilisateur +
     "'"} AND i.DateCreation BETWEEN ${"'" + dates[0] + "'"} AND ${"'" +
@@ -31,7 +29,6 @@ export default async function get_orders(status, dates) {
   }
   query += `ORDER BY i.DateCreation DESC`;
 
-  console.log(query);
   const results = await MSSQL.executeQuery(query);
 
   return results;

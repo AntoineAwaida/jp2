@@ -17,7 +17,6 @@ class BottomMessage extends Component {
 
   componentDidMount() {
     this.props.emitter.addListener('trigger-message', ({error, message}) => {
-      console.log('triggered');
       this.setState({error, message}, () => {
         Animated.sequence([
           Animated.delay(300),

@@ -37,7 +37,6 @@ function Checkout(props) {
     } catch (e) {
       props.emitter.emit('trigger-message', {error: true, message: e.message});
       logError(e);
-      console.log(e);
     } finally {
       props.emitter.emit('dismissDimmer');
     }

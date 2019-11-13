@@ -79,8 +79,7 @@ class BasketModal extends React.Component {
       });
     } catch (e) {
       logError(e);
-      console.log(e);
-      console.log('Unable to reach database.');
+
       this.setState(
         {
           message:

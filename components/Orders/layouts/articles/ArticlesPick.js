@@ -69,7 +69,6 @@ export default class ArticlesPick extends Component {
           this.props.ee.emit('searchingArticles');
           get_articles(this.props.criterias, this.state.search)
             .then(articles => {
-              console.log(articles);
               let data = [];
               for (let i = 0; i < articles.length; i++) {
                 let article = articles[i];
