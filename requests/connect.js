@@ -9,8 +9,9 @@ export default async function connect() {
     config = await JSON.parse(config);
     config.timeout = 5;
     const depot = config.depot;
-    delete config.depot;
 
+    delete config.depot;
+    delete config.limitArticles;
     return await MSSQL.connect(config);
   } catch (e) {
     throw Error(

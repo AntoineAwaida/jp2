@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {View} from 'react-native';
+import {View, FlatList} from 'react-native';
 
 import {Text, ListItem, Button} from 'react-native-elements';
 
@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import {ActivityIndicator} from 'react-native-paper';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {FlatList} from 'react-native-gesture-handler';
+
 import logError from '../../Settings/logError';
 
 import BottomMessage from '../../Layout/Alert/bottomMessage';

@@ -1,11 +1,10 @@
 import React, {Component} from 'react';
 
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import {Input, Icon} from 'react-native-elements';
 import {Button, ActivityIndicator} from 'react-native-paper';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 
 import {EventEmitter} from 'events';
 import BottomMessage from '../Layout/Alert/bottomMessage';

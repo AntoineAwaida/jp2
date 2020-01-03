@@ -1,13 +1,16 @@
 import React, {Component} from 'react';
 import Modal from 'react-native-modal';
-import {Text, Button, ListItem, CheckBox} from 'react-native-elements';
+
+import {Button as ButtonMaterial} from 'react-native-paper';
 import {View, FlatList} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
-import get_family from '../../../requests/criterias/get_family';
-import get_sousfamille from '../../../requests/criterias/get_sousfamille';
-import get_gamme from '../../../requests/criterias/get_gamme';
-import get_qualite from '../../../requests/criterias/get_qualite';
-import logError from '../../Settings/logError';
+import get_family from '../../../../requests/criterias/get_family';
+import get_sousfamille from '../../../../requests/criterias/get_sousfamille';
+import get_gamme from '../../../../requests/criterias/get_gamme';
+import get_qualite from '../../../../requests/criterias/get_qualite';
+import logError from '../../../Settings/logError';
+import CriteriaItem from './CriteriaItem';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 export default class CriteriaModal extends Component {
   constructor(props) {
@@ -18,11 +21,14 @@ export default class CriteriaModal extends Component {
       isLoading: true,
       criteriaSelected: this.props.criteria[this.props.criteriaSelected],
     };
+
+    this.selectCriteria = this.selectCriteria.bind(this);
   }
 
   getData() {
     this.setState({
       isLoading: true,
+      failure: false,
       criteriaSelected: this.props.criteria[this.props.criteriaSelected],
     });
     let get;
@@ -40,10 +46,12 @@ export default class CriteriaModal extends Component {
     get &&
       get()
         .then(res => {
-          this.setState({criteria: res, isLoading: false});
+          this.setState({criteria: res, isLoading: false}, () => {
+            this.props.setLoading(false);
+          });
         })
         .catch(e => {
-          this.setState({isLoading: false});
+          this.setState({isLoading: false, failure: true});
           this.props.ee.emit('trigger-message', {
             error: true,
             message: e.message,
@@ -98,10 +106,32 @@ export default class CriteriaModal extends Component {
         }}>
         {this.state.isLoading ? (
           <ActivityIndicator size="large" color="#FF4747"></ActivityIndicator>
+        ) : this.state.failure ? (
+          <View
+            style={{
+              justifyContent: 'center',
+              alignItems: 'center',
+
+              flex: 1,
+            }}>
+            <ButtonMaterial
+              mode="outlined"
+              mode="outlined"
+              style={{
+                borderColor: '#FF4747',
+                borderWidth: 2,
+                borderRadius: 15,
+              }}
+              color="#FF4747"
+              onPress={() => this.getData()}>
+              <FontAwesome5Icon name="redo" color="#FF4747" size={15} />
+              {'  '}
+              Press to retry
+            </ButtonMaterial>
+          </View>
         ) : (
           <View style={{flex: 1, justifyContent: 'center', padding: 5}}>
             <FlatList
-              nestedScrollEnabled={true}
               contentContainerStyle={{
                 display: 'flex',
                 justifyContent: 'center',
@@ -109,41 +139,10 @@ export default class CriteriaModal extends Component {
               data={this.state.criteria}
               keyExtractor={item => item.Code}
               renderItem={({item}) => (
-                <ListItem
-                  containerStyle={{
-                    padding: 0,
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#D5D3D3',
-                    backgroundColor: this.state.criteriaSelected.some(
-                      i => i.Code === item.Code,
-                    )
-                      ? '#FF4747'
-                      : 'white',
-                  }}
-                  titleStyle={{
-                    flex: 1,
-                    textAlign: 'center',
-                    textAlignVertical: 'center',
-                    color: this.state.criteriaSelected.some(
-                      i => i.Code === item.Code,
-                    )
-                      ? 'white'
-                      : 'grey',
-                  }}
-                  rightTitle={
-                    <CheckBox
-                      checkedColor="white"
-                      onPress={() => this.selectCriteria(item)}
-                      checkedIcon="dot-circle-o"
-                      uncheckedIcon="circle-o"
-                      checked={this.state.criteriaSelected.some(
-                        i => i.Code === item.Code,
-                      )}
-                    />
-                  }
-                  title={item.Libelle}
-                  key={item.Code}
-                />
+                <CriteriaItem
+                  selectCriteria={this.selectCriteria}
+                  criteriaSelected={this.state.criteriaSelected}
+                  item={item}></CriteriaItem>
               )}
             />
           </View>

@@ -1,8 +1,13 @@
 import React, {Component} from 'react';
 
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
 import {Button} from 'react-native-paper';
-import {ScrollView} from 'react-native-gesture-handler';
 
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -36,6 +41,7 @@ class Settings extends Component {
       password: null,
       port: 1433,
       depot: null,
+      limitArticles: 50,
     };
     this._emitter = new EventEmitter();
     this._emitter.setMaxListeners(0);
@@ -46,6 +52,7 @@ class Settings extends Component {
     this.changePassword = this.changePassword.bind(this);
     this.changeDepot = this.changeDepot.bind(this);
     this.changePort = this.changePort.bind(this);
+    this.changeLimitArticles = this.changeLimitArticles.bind(this);
   }
 
   async componentDidMount() {
@@ -59,6 +66,7 @@ class Settings extends Component {
         database: credentials.database,
         port: credentials.port,
         depot: credentials.depot,
+        limitArticles: credentials.limitArticles,
       });
     }
   }
@@ -96,6 +104,7 @@ class Settings extends Component {
       this.state.database,
       this.state.port,
       this.state.depot,
+      this.state.limitArticles,
     );
 
     this._emitter.emit('trigger-message', {
@@ -134,6 +143,12 @@ class Settings extends Component {
 
   changeDepot(depot) {
     this.setState({depot: depot});
+  }
+
+  changeLimitArticles(nb) {
+    nb = nb.replace(/\D/gm, '');
+    nb.length < 3 && this.setState({limitArticles: parseInt(nb)});
+    nb.length === 0 && this.setState({limitArticles: 50});
   }
 
   render() {
@@ -252,6 +267,24 @@ class Settings extends Component {
                   shake={true}
                   name="nbdepot"
                   placeholder="Depot"
+                  clearTextOnFocus={true}
+                  inputContainerStyle={style.dividerStyle}
+                  inputStyle={{color: '#FF4747', marginLeft: 10}}
+                  placeholderTextColor="grey"
+                  leftIcon={<FontAwesome5 name="key" size={20} color="white" />}
+                />
+                <Input
+                  onChangeText={this.changeLimitArticles}
+                  value={
+                    this.state.limitArticles &&
+                    !isNaN(this.state.limitArticles) &&
+                    String(this.state.limitArticles)
+                  }
+                  maxLength={2}
+                  shake={true}
+                  keyboardType="numeric"
+                  name="nbarticles"
+                  placeholder="Articles limit"
                   clearTextOnFocus={true}
                   inputContainerStyle={style.dividerStyle}
                   inputStyle={{color: '#FF4747', marginLeft: 10}}

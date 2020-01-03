@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
 
-import {View, Text} from 'react-native';
+import {View, Text, FlatList, ScrollView} from 'react-native';
 
 import {ActivityIndicator} from 'react-native-paper';
-import {FlatList, ScrollView} from 'react-native-gesture-handler';
+
 import {ListItem} from 'react-native-elements';
 
 import PropTypes from 'prop-types';
@@ -143,7 +143,7 @@ export default class ListOrders extends Component {
               alignItems: 'center',
               marginTop: 30,
             }}>
-            <ActivityIndicator size='large' color='#FF4747' />
+            <ActivityIndicator size="large" color="#FF4747" />
           </View>
         ) : !this.state.commandes ? (
           <View
@@ -165,8 +165,8 @@ export default class ListOrders extends Component {
                 leftElement={
                   <FontAwesome5Icon
                     size={30}
-                    color='#D5D3D3'
-                    name='chevron-right'></FontAwesome5Icon>
+                    color="#D5D3D3"
+                    name="chevron-right"></FontAwesome5Icon>
                 }
                 onPress={() =>
                   this.props.navigation.navigate('ViewOrder', {

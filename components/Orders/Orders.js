@@ -1,6 +1,14 @@
 import React, {Component} from 'react';
 
-import {View, StyleSheet, Alert, Keyboard, Animated} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Alert,
+  Keyboard,
+  Animated,
+  Button,
+  ScrollView,
+} from 'react-native';
 
 import PropTypes from 'prop-types';
 
@@ -11,16 +19,10 @@ import {Text, Badge} from 'react-native-elements';
 import _ from 'lodash';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native-gesture-handler';
+
 // import CustomerModal from './modals/CustomerModal';
 import BasketModal from './modals/BasketModal';
 import Checkout from './layouts/Checkout';
-
-import ArticlesPick from './layouts/articles/ArticlesPick';
 import Customers from './customers/Customers';
 
 import SelectedCustomer from './customers/SelectedCustomer';
@@ -31,8 +33,12 @@ import withBadge from './withBadge';
 import Geolocation from 'react-native-geolocation-service';
 import Dimmer from './modals/Dimmer';
 import BottomMessage from '../Layout/Alert/bottomMessage';
+import ArticlesSteps from './layouts/articles/steps/ArticlesSteps';
+import ArticlesPick from './layouts/articles/pick/ArticlesPick';
 
 const EventEmitter = require('events');
+
+export const OrderContext = React.createContext({criteriaSelected: []});
 
 class Orders extends Component {
   static navigationOptions = ({navigation}) => {
@@ -44,8 +50,8 @@ class Orders extends Component {
       headerLeft: params.articles && params.articles.length > 0 && (
         <BadgedIcon
           style={{marginLeft: 10}}
-          color='#FF4747'
-          name='shopping-cart'
+          color="#FF4747"
+          name="shopping-cart"
           size={30}
           onPress={() =>
             navigation.navigate('ArticlesList', {
@@ -58,8 +64,8 @@ class Orders extends Component {
       headerRight: (
         <FontAwesome5
           style={{marginRight: 20}}
-          color='#FF4747'
-          name='history'
+          color="#FF4747"
+          name="history"
           size={30}
           onPress={() => navigation.navigate('ListOrders')}
         />
@@ -76,8 +82,10 @@ class Orders extends Component {
       customer: null,
       article: null,
       GPS: null,
+
       articles: [],
       articlesPickOpacity: new Animated.Value(0),
+      step: 0,
       criteria: {
         famille: [],
         sous_famille: [],
@@ -95,30 +103,37 @@ class Orders extends Component {
     this.clearOffer.bind(this);
     this.cancelCustomer = this.cancelCustomer.bind(this);
     this.selectCustomer = this.selectCustomer.bind(this);
+    this.setStep = this.setStep.bind(this);
+    this.addArticle = this.addArticle.bind(this);
+    this.removeArticle = this.removeArticle.bind(this);
+    this.previousStep = this.previousStep.bind(this);
   }
 
   clearOffer() {
-    this.setState({customer: null, articles: [], article: null}, () => {
-      const {articles} = this.state;
-      this.props.navigation.setParams({articles});
-    });
-  }
-
-  listenKeyboard() {
-    this.keyboardDidShowlistener = Keyboard.addListener(
-      'keyboardDidShow',
+    this.setState(
+      {customer: null, articles: [], article: null, step: 0},
       () => {
-        this.ee.emit('keyboardUp');
-      },
-    );
-
-    this.keyboardDidHidelistener = Keyboard.addListener(
-      'keyboardDidHide',
-      () => {
-        this.ee.emit('keyboardDown');
+        const {articles} = this.state;
+        this.props.navigation.setParams({articles});
       },
     );
   }
+
+  // listenKeyboard() {
+  //   this.keyboardDidShowlistener = Keyboard.addListener(
+  //     'keyboardDidShow',
+  //     () => {
+  //       this.ee.emit('keyboardUp');
+  //     },
+  //   );
+
+  //   this.keyboardDidHidelistener = Keyboard.addListener(
+  //     'keyboardDidHide',
+  //     () => {
+  //       this.ee.emit('keyboardDown');
+  //     },
+  //   );
+  // }
 
   listenEvents() {
     this.ee.on('clearOffer', () => this.clearOffer());
@@ -175,8 +190,8 @@ class Orders extends Component {
   }
 
   componentWillUnmount() {
-    this.keyboardDidShowlistener.remove();
-    this.keyboardDidHidelistener.remove();
+    // this.keyboardDidShowlistener.remove();
+    // this.keyboardDidHidelistener.remove();
   }
 
   getCoordinates(high) {
@@ -202,7 +217,7 @@ class Orders extends Component {
   }
 
   componentDidMount() {
-    this.listenKeyboard();
+    // this.listenKeyboard();
     this.listenEvents();
 
     const {articles} = this.state;
@@ -210,6 +225,47 @@ class Orders extends Component {
     this.props.navigation.setParams({articles, ee});
 
     this.getCoordinates(true);
+  }
+
+  removeArticle(article) {
+    this.setState(
+      {
+        articles: this.state.articles.filter(
+          e => e.Code_Article !== article.Code_Article,
+        ),
+      },
+      () => {
+        const {articles} = this.state;
+        this.props.navigation.setParams({articles});
+      },
+    );
+  }
+
+  addArticle(article) {
+    this.state.articles.find(e => e.Code_Article === article.Code_Article)
+      ? //modif quantité si l'article est déjà dans la liste
+        this.setState(
+          {
+            articles: this.state.articles.map(a => {
+              return a.Code_Article === article.Code_Article ? article : a;
+            }),
+          },
+          () => {
+            const {articles} = this.state;
+            this.props.navigation.setParams({articles});
+            this.ee.emit('articleAdded');
+          },
+        )
+      : this.setState(
+          {
+            articles: [...this.state.articles, article],
+          },
+          () => {
+            const {articles} = this.state;
+            this.props.navigation.setParams({articles});
+            this.ee.emit('articleAdded');
+          },
+        );
   }
 
   toggleBasketModal(article) {
@@ -233,6 +289,14 @@ class Orders extends Component {
             this.props.navigation.setParams({articles});
           },
         );
+  }
+
+  setStep(step) {
+    this.setState({step});
+  }
+
+  previousStep() {
+    this.state.step > 0 && this.setState({step: this.state.step - 1});
   }
 
   selectCustomer(customer) {
@@ -262,6 +326,7 @@ class Orders extends Component {
               {
                 customer: null,
                 articles: [],
+                step: 0,
                 criteria: {
                   famille: [],
                   sous_famille: [],
@@ -282,6 +347,7 @@ class Orders extends Component {
   }
 
   render() {
+    console.warn(this.state.criteria);
     return (
       <>
         <View style={{flex: 1, backgroundColor: 'rgba(213, 211, 211, .2)'}}>
@@ -299,7 +365,7 @@ class Orders extends Component {
             />
 
             {!this.state.customer ? (
-              <ScrollView style={style.selectCustomercontainer}>
+              <View style={style.selectCustomercontainer}>
                 <View
                   style={{
                     flex: 0.1,
@@ -331,32 +397,47 @@ class Orders extends Component {
                     selectCustomer={this.selectCustomer}
                   />
                 </View>
-              </ScrollView>
+              </View>
             ) : (
               <Animated.View
-                style={{flex: 1, opacity: this.state.articlesPickOpacity}}>
-                <ScrollView style={style.selectCustomercontainer}>
-                  <View style={style.customerContainer}>
-                    <SelectedCustomer
-                      emitter={this.ee}
-                      customer={this.state.customer}
-                      cancelCustomer={this.cancelCustomer}
-                    />
-                  </View>
-                  <View style={style.shoppingCardContainer}>
-                    <View style={style.listArticles}></View>
-                    <View style={style.pickArticles}>
-                      <ArticlesPick
-                        criterias={this.state.criteria}
-                        articles={this.state.articles}
-                        ee={this.ee}
-                        toggleBasketModal={e => this.toggleBasketModal(e)}
-                        toggleCriteriaModal={e => this.toggleCriteriaModal(e)}
-                      />
-                    </View>
-                  </View>
-                </ScrollView>
-                {
+                style={{
+                  flex: 1,
+                  opacity: this.state.articlesPickOpacity,
+                }}>
+                <View style={style.customerContainer}>
+                  <SelectedCustomer
+                    emitter={this.ee}
+                    customer={this.state.customer}
+                    cancelCustomer={this.cancelCustomer}
+                  />
+                </View>
+                <View style={style.shoppingCardContainer}>
+                  <OrderContext.Provider
+                    value={{criteriaSelected: this.state.criteria}}>
+                    {this.state.step < 4 ? (
+                      <>
+                        <ArticlesSteps
+                          previousStep={this.previousStep}
+                          setStep={this.setStep}
+                          step={this.state.step}
+                          criterias={this.state.criteria}
+                          articles={this.state.articles}
+                          ee={this.ee}></ArticlesSteps>
+                      </>
+                    ) : (
+                      <View style={{flex: 1}}>
+                        <ArticlesPick
+                          previousStep={this.previousStep}
+                          removeArticle={this.removeArticle}
+                          addArticle={this.addArticle}
+                          ee={this.ee}
+                          criterias={this.state.criteria}
+                          articles={this.state.articles}></ArticlesPick>
+                      </View>
+                    )}
+                  </OrderContext.Provider>
+                </View>
+                {this.state.step === 4 && (
                   <View style={{flex: 0.1}}>
                     <Checkout
                       emitter={this.ee}
@@ -367,7 +448,7 @@ class Orders extends Component {
                       GPS={this.state.GPS}
                     />
                   </View>
-                }
+                )}
               </Animated.View>
             )}
           </SafeAreaView>
@@ -394,19 +475,18 @@ const style = StyleSheet.create({
     flex: 0.1,
     flexDirection: 'row',
     alignItems: 'center',
-
     margin: 10,
+    marginTop: 10,
   },
 
   shoppingCardContainer: {
-    flex: 0.9,
+    flexGrow: 0.9,
+    backgroundColor: 'white',
+    borderRadius: 30,
+    margin: 10,
+    marginBottom: 0,
   },
-  listArticles: {
-    marginRight: 10,
-  },
-  pickArticles: {
-    flex: 1,
-  },
+
   selectCustomercontainer: {
     flex: 0.9,
   },

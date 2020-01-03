@@ -7,6 +7,7 @@ export default async function logCredentials(
   database,
   port,
   depot,
+  limitArticles,
 ) {
   await AsyncStorage.removeItem('credentials');
 
@@ -21,6 +22,7 @@ export default async function logCredentials(
     database: database,
     port: parseInt(port),
     depot: depot,
+    limitArticles: parseInt(limitArticles),
   };
 
   AsyncStorage.setItem('credentials', JSON.stringify(credentials));

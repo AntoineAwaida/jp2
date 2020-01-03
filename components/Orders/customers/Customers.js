@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 
-import {View} from 'react-native';
+import {View, FlatList} from 'react-native';
 import {SearchBar, ListItem} from 'react-native-elements';
-import {FlatList} from 'react-native-gesture-handler';
 
 import PropTypes from 'prop-types';
 
@@ -77,12 +76,31 @@ class Customers extends Component {
               <ActivityIndicator size="large" color="#FF4747" />
             ) : (
               <FlatList
-                contentContainerStyle={{borderRadius: 20}}
                 keyExtractor={item => item.Code_Client}
                 data={this.state.matchingCustomers}
-                renderItem={({item}) => (
+                renderItem={({item, index}) => (
                   <ListItem
+                    containerStyle={{
+                      borderTopLeftRadius: index === 0 ? 10 : 0,
+                      borderTopRightRadius: index === 0 ? 10 : 0,
+                      borderBottomLeftRadius:
+                        index === this.state.matchingCustomers.length - 1
+                          ? 10
+                          : 0,
+                      borderBottomRightRadius:
+                        index === this.state.matchingCustomers.length - 1
+                          ? 10
+                          : 0,
+                      backgroundColor: 'white',
+                      marginHorizontal: 10,
+                    }}
                     titleStyle={{textAlign: 'center', color: '#FF4747'}}
+                    subtitleStyle={{textAlign: 'center'}}
+                    subtitle={
+                      item.solde !== null
+                        ? 'Balance : ' + item.solde + ' LYD'
+                        : ''
+                    }
                     key={item.Code_Client}
                     title={item.RaisonSociale}
                     onPress={() => this.selectCustomer(item)}

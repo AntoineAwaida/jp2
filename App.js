@@ -8,7 +8,7 @@
 
 import React, {Component} from 'react';
 
-import {PermissionsAndroid, View, Text} from 'react-native';
+import {PermissionsAndroid, View, Text, Platform} from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
 import Navigation from './components/Navigation/Navigation';
@@ -62,20 +62,25 @@ export default class App extends Component {
   }
 
   render() {
-    return this.state.granted ? (
-      this.state.granted === 'granted' ? (
-        <Navigation />
+    return Platform.OS === 'android' ? (
+      this.state.granted ? (
+        this.state.granted === 'granted' ? (
+          <Navigation />
+        ) : (
+          <View
+            style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
+            <Text>
+              You must grant access to your location to the application!
+            </Text>
+          </View>
+        )
       ) : (
         <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-          <Text>
-            You must grant access to your location to the application!
-          </Text>
+          <ActivityIndicator size="large" color="#FF4747" />
         </View>
       )
     ) : (
-      <View style={{justifyContent: 'center', alignItems: 'center', flex: 1}}>
-        <ActivityIndicator size="large" color="#FF4747" />
-      </View>
+      <Navigation></Navigation>
     );
   }
 }

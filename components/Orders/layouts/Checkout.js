@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Text} from 'react-native-elements';
 
-import {Button} from 'react-native-paper';
+import {Button, ActivityIndicator} from 'react-native-paper';
 
 import {View, Alert, StyleSheet, Animated} from 'react-native';
 
@@ -16,6 +16,7 @@ import save_order from '../../../requests/save_order';
 
 function Checkout(props) {
   const [price, setPrice] = useState(0);
+  const [calculating, setCalculating] = useState(false);
 
   const [bottomPosition, setbottomPosition] = useState(new Animated.Value(0));
 
@@ -41,6 +42,9 @@ function Checkout(props) {
       props.emitter.emit('dismissDimmer');
     }
   }
+
+  props.emitter.addListener('addingArticle', () => setCalculating(true));
+  props.emitter.addListener('articleAdded', () => setCalculating(false));
 
   props.emitter.addListener('keyboardUp', () => {
     Animated.timing(bottomPosition, {
@@ -72,8 +76,12 @@ function Checkout(props) {
           marginRight: 5,
         }}>
         <Button
+          disabled={calculating}
           mode="outlined"
-          style={{borderColor: '#FF4747', borderWidth: 2}}
+          style={{
+            borderColor: calculating ? '#D5D3D3' : '#FF4747',
+            borderWidth: 2,
+          }}
           color="#FF4747"
           onPress={() => {
             props.customer && props.articles.length > 0
@@ -98,7 +106,11 @@ function Checkout(props) {
                   'Please select a client and at least an article in your basket.',
                 );
           }}>
-          <FontAwesome5 name="shopping-cart" color="#FF4747" size={15} />{' '}
+          <FontAwesome5
+            name="shopping-cart"
+            color={calculating ? '#D5D3D3' : '#FF4747'}
+            size={15}
+          />{' '}
           Checkout
         </Button>
       </View>
@@ -111,9 +123,13 @@ function Checkout(props) {
           flex: 0.6,
           marginRight: 10,
         }}>
-        <Text style={{color: '#FF4747'}} h3>
-          {'  ' + price + ' LYD'}
-        </Text>
+        {calculating ? (
+          <ActivityIndicator color="#FF4747" />
+        ) : (
+          <Text style={{color: '#FF4747'}} h3>
+            {'  ' + price + ' LYD'}
+          </Text>
+        )}
       </View>
     </Animated.View>
   );

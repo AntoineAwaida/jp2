@@ -31,10 +31,10 @@ class SelectedCustomer extends Component {
       <View style={{flexDirection: 'row', flex: 1}}>
         <View
           style={{
-            backgroundColor: 'white',
+            backgroundColor: '#D5D3D3',
             borderRadius: 20,
             flexDirection: 'row',
-            flex: 0.6,
+            flex: 1,
           }}>
           <View
             style={{
@@ -93,7 +93,7 @@ class SelectedCustomer extends Component {
             </TouchableOpacity>
           </View>
         </View>
-        <View
+        {/* <View
           style={{flex: 0.4, justifyContent: 'center', alignItems: 'flex-end'}}>
           <Button
             onPress={() => {
@@ -133,7 +133,7 @@ class SelectedCustomer extends Component {
               padding: 5,
               marginTop: 3,
             }}></Button>
-        </View>
+        </View> */}
       </View>
     );
   }
@@ -141,7 +141,7 @@ class SelectedCustomer extends Component {
 
 const style = StyleSheet.create({
   textColor: {
-    color: 'gray',
+    color: 'white',
   },
 });
 

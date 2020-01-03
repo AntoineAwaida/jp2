@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import {View, Text, Alert} from 'react-native';
+import {View, Text, Alert, FlatList} from 'react-native';
 
 import PropTypes from 'prop-types';
 import {ListItem} from 'react-native-elements';
@@ -8,7 +8,6 @@ import {ListItem} from 'react-native-elements';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {ActivityIndicator} from 'react-native-paper';
 import BasketModal from '../../modals/BasketModal';
-import {FlatList} from 'react-native-gesture-handler';
 
 export default class ArticlesList extends Component {
   static navigationOptions = ({navigation}) => {

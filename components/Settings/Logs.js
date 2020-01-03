@@ -1,10 +1,9 @@
 import React, {Component} from 'react';
 
-import {View, Text, Linking} from 'react-native';
+import {View, Text, Linking, ScrollView, FlatList} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {ActivityIndicator} from 'react-native-paper';
 import {ListItem} from 'react-native-elements';
-import {ScrollView, FlatList} from 'react-native-gesture-handler';
 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 

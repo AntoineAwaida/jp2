@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity, Picker} from 'react-native';
 import {Divider} from 'react-native-elements';
-import CriteriaModal from '../../modals/CriteriaModal';
+import CriteriaModal from '../../modals/Criterias/CriteriaModal';
 
 export default class SearchCriterias extends Component {
   constructor(props) {
