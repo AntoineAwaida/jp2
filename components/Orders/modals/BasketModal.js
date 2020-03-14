@@ -129,7 +129,7 @@ class BasketModal extends React.Component {
               style={{
                 textAlign: 'center',
                 fontSize: 20,
-                fontFamily: 'Roboto-Thin',
+                // fontFamily: 'Roboto-Thin',
               }}>
               {this.state.article && this.state.article.Designation}
             </Text>
@@ -178,6 +178,7 @@ class BasketModal extends React.Component {
                   !isNaN(this.state.quantity) && String(this.state.quantity)
                 }
                 keyboardType="numeric"
+                returnKeyType="done"
                 placeholder="quantity..."
                 onChangeText={e => this.handleQuantity(e)}
                 errorMessage={

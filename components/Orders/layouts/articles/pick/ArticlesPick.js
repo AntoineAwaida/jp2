@@ -91,7 +91,6 @@ export default class ArticlesPick extends Component {
                 this.props.ee.emit('articlesSearched');
               });
               logError(err);
-              console.log(err);
             });
         })
       : this.setState({
@@ -126,11 +125,10 @@ export default class ArticlesPick extends Component {
                 }}>
                 <Badge
                   onPress={() => this.props.previousStep()}
-                  containerStyle={{padding: 5}}
                   badgeStyle={{
-                    padding: 10,
-                    paddingVertical: 15,
                     backgroundColor: '#ff4747',
+                    height: 30,
+                    paddingHorizontal: 15,
                   }}
                   value={
                     <Text style={{color: 'white', fontSize: 15}}>
@@ -167,9 +165,14 @@ export default class ArticlesPick extends Component {
               inputStyle={{color: 'grey'}}
               leftIconContainerStyle={{marginRight: 8}}
               style={{borderBottomColor: 'transparent'}}
+              placeholderTextColor="grey"
               placeholder="Code or designation of article"
               onChangeText={text => this.setState({search: text})}
-              onEndEditing={() => this.getArticles()}
+              onEndEditing={() => {
+                this.setState({index: 0, isLoading: true}, () => {
+                  this.getArticles();
+                });
+              }}
               value={this.state.search}
             />
           </View>
@@ -179,11 +182,11 @@ export default class ArticlesPick extends Component {
               <View
                 style={{
                   flex: 0.2,
+                  justifyContent: 'center',
                 }}>
                 <TouchableOpacity
                   disabled={this.state.index === 0}
                   style={{
-                    flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
@@ -205,12 +208,12 @@ export default class ArticlesPick extends Component {
               <View
                 style={{
                   flex: 0.2,
+                  justifyContent: 'center',
                 }}>
                 <TouchableOpacity
                   disabled={this.state.availableArticles.length === 0}
                   //changer par < aux nombres d'articles de la page.
                   style={{
-                    flex: 1,
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}

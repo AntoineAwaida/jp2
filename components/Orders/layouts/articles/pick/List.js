@@ -24,7 +24,7 @@ export default class List extends Component {
   async addArticle(article, e) {
     try {
       this.props.ee.emit('addingArticle');
-      const quantity = parseFloat(e.nativeEvent.text);
+      const quantity = parseFloat(e.nativeEvent.text.replace(/,/, '.'));
       if (!isNaN(quantity)) {
         const price = await get_price(article, quantity);
         parseFloat(e) != 0

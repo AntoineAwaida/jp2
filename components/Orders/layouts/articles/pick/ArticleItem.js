@@ -104,7 +104,7 @@ export default class ArticleItem extends PureComponent {
               style={{
                 color: 'white',
                 textAlign: 'center',
-                fontFamily: 'Roboto-Thin',
+                // fontFamily: 'Roboto-Thin',
               }}>
               {item.Designation && item.Designation.slice(0, 36)}
             </Text>
@@ -115,8 +115,8 @@ export default class ArticleItem extends PureComponent {
           <View
             style={{
               flex: 0.3,
+
               justifyContent: 'center',
-              alignItems: 'center',
             }}>
             <TextInput
               editable={!pending}
@@ -128,10 +128,12 @@ export default class ArticleItem extends PureComponent {
                   borderBottomWidth: 3,
                   fontSize: 16,
                   fontWeight: 'bold',
+                  marginHorizontal: 20,
                 },
                 styles.textArticle,
               ]}
-              keyboardType="numeric"
+              keyboardType="decimal-pad"
+              returnKeyType="done"
               maxLength={4}></TextInput>
           </View>
         </View>
@@ -162,7 +164,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   articleContainer: {
-    padding: 3,
+    padding: 10,
 
     flex: 1,
     opacity: 1,
@@ -176,6 +178,6 @@ const styles = StyleSheet.create({
   textArticle: {
     color: 'white',
     textAlign: 'center',
-    fontFamily: 'Roboto-Thin',
+    // fontFamily: 'Roboto-Thin',
   },
 });

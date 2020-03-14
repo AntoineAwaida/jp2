@@ -15,7 +15,15 @@ export default class CriteriaItem extends PureComponent {
 
     return (
       <ListItem
+        contentContainerStyle={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
         containerStyle={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
           padding: 0,
           borderBottomWidth: 1,
           borderBottomColor: '#D5D3D3',
@@ -23,9 +31,11 @@ export default class CriteriaItem extends PureComponent {
         }}
         titleStyle={{
           flex: 1,
+
+          alignItems: 'center',
+          justifyContent: 'center',
+
           textAlign: 'center',
-          textAlignVertical: 'center',
-          color: checked ? 'white' : 'grey',
         }}
         rightTitle={
           <CheckBox
@@ -36,7 +46,11 @@ export default class CriteriaItem extends PureComponent {
             checked={checked}
           />
         }
-        title={item.Libelle}
+        title={
+          <Text style={{color: checked ? 'white' : 'grey'}}>
+            {item.Libelle}
+          </Text>
+        }
         key={item.Code}
       />
     );

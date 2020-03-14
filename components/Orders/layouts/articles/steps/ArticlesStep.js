@@ -14,6 +14,11 @@ export default class ArticlesStep extends Component {
     this.setLoading = this.setLoading.bind(this);
   }
 
+  previousStep() {
+    this.props.step > 0 && this.setLoading(true);
+    this.props.previousStep();
+  }
+
   setLoading(status) {
     this.setState({isLoading: status});
   }
@@ -58,7 +63,7 @@ export default class ArticlesStep extends Component {
                 borderRadius: 15,
               }}
               color={this.state.isLoading ? '#D5D3D3' : '#FF4747'}
-              onPress={() => this.props.previousStep()}>
+              onPress={() => this.previousStep()}>
               <FontAwesome5
                 name="undo"
                 color={this.state.isLoading ? '#D5D3D3' : 'white'}

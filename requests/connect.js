@@ -1,21 +1,13 @@
-import MSSQL from 'react-native-mssql';
-
 import AsyncStorage from '@react-native-community/async-storage';
 
 export default async function connect() {
-  try {
-    let config = await AsyncStorage.getItem('credentials');
+  let config = await AsyncStorage.getItem('credentials');
 
-    config = await JSON.parse(config);
-    config.timeout = 5;
-    const depot = config.depot;
+  config = await JSON.parse(config);
 
-    delete config.depot;
-    delete config.limitArticles;
-    return await MSSQL.connect(config);
-  } catch (e) {
-    throw Error(
-      'Error while connecting to the database. Check your internet connection.',
-    );
-  }
+  config.user = config.username;
+
+  delete config.depot;
+  delete config.limitArticles;
+  return config;
 }

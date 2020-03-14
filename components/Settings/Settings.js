@@ -35,7 +35,7 @@ class Settings extends Component {
       connSuccessful: null,
       message: null,
       error: null,
-      server: null,
+      server: '10.0.0.247',
       username: null,
       database: 'DataXV',
       password: null,
@@ -72,27 +72,27 @@ class Settings extends Component {
   }
 
   testConnection() {
-    this.setState({isTesting: true}, () => {
-      testConnection()
-        .then(res => {
-          this.setState({isTesting: false, connSuccessful: true});
-        })
-        .catch(err => {
-          logError(err);
+    this.setState({isTesting: true}, async () => {
+      try {
+        const res = await testConnection();
 
-          this.setState(
-            {
-              isTesting: false,
-              connSuccessful: false,
-            },
-            () => {
-              this._emitter.emit('trigger-message', {
-                message: 'Error while connecting to the remote database.',
-                error: true,
-              });
-            },
-          );
-        });
+        this.setState({isTesting: false, connSuccessful: true});
+      } catch (err) {
+        logError(err);
+
+        this.setState(
+          {
+            isTesting: false,
+            connSuccessful: false,
+          },
+          () => {
+            this._emitter.emit('trigger-message', {
+              message: 'Error while connecting to the remote database.',
+              error: true,
+            });
+          },
+        );
+      }
     });
   }
 

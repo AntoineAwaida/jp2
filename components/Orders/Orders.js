@@ -347,7 +347,6 @@ class Orders extends Component {
   }
 
   render() {
-    console.warn(this.state.criteria);
     return (
       <>
         <View style={{flex: 1, backgroundColor: 'rgba(213, 211, 211, .2)'}}>
@@ -376,7 +375,8 @@ class Orders extends Component {
                     containerStyle={{margin: 5, padding: 5}}
                     badgeStyle={{
                       margin: 5,
-                      padding: 15,
+                      height: 30,
+                      paddingHorizontal: 15,
                       backgroundColor: '#ff4747',
                     }}
                     value={

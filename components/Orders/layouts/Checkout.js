@@ -36,7 +36,11 @@ function Checkout(props) {
         emitter: props.emitter,
       });
     } catch (e) {
-      props.emitter.emit('trigger-message', {error: true, message: e.message});
+      console.log(e);
+      props.emitter.emit('trigger-message', {
+        error: true,
+        message: 'Unable to save order.',
+      });
       logError(e);
     } finally {
       props.emitter.emit('dismissDimmer');
@@ -45,20 +49,6 @@ function Checkout(props) {
 
   props.emitter.addListener('addingArticle', () => setCalculating(true));
   props.emitter.addListener('articleAdded', () => setCalculating(false));
-
-  props.emitter.addListener('keyboardUp', () => {
-    Animated.timing(bottomPosition, {
-      toValue: -50,
-      duration: 300,
-    }).start();
-  });
-
-  props.emitter.addListener('keyboardDown', () => {
-    Animated.timing(bottomPosition, {
-      toValue: 0,
-      duration: 300,
-    }).start();
-  });
 
   useEffect(() => {
     const total_price = getPrice(props.articles);

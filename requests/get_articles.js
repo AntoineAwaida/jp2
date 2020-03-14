@@ -1,6 +1,6 @@
-import MSSQL from 'react-native-mssql';
 import connect from './connect';
 import AsyncStorage from '@react-native-community/async-storage';
+import {fetchRequest} from './fetch';
 
 export default async function get_articles(criterias, search, page) {
   await connect();
@@ -85,6 +85,6 @@ export default async function get_articles(criterias, search, page) {
       1) *
       nbPage} `;
 
-  const results = await MSSQL.executeQuery(query);
+  const results = await fetchRequest(query);
   return results;
 }

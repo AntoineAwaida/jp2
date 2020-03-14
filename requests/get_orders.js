@@ -1,9 +1,7 @@
-import MSSQL from 'react-native-mssql';
-import connect from './connect';
 import AsyncStorage from '@react-native-community/async-storage';
+import {fetchRequest} from './fetch';
 
 export default async function get_orders(status, dates) {
-  await connect();
   let user = await AsyncStorage.getItem('user');
   user = JSON.parse(user);
 
@@ -29,7 +27,7 @@ export default async function get_orders(status, dates) {
   }
   query += `ORDER BY i.DateCreation DESC`;
 
-  const results = await MSSQL.executeQuery(query);
+  const results = await fetchRequest(query);
 
   return results;
 }
