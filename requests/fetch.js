@@ -9,8 +9,6 @@ export async function fetchRequest(query) {
 
     const response = await Axios.post(api + 'request', {query, config});
 
-    console.log(response.data);
-
     return response.data;
   } catch (e) {
     throw Error(e);

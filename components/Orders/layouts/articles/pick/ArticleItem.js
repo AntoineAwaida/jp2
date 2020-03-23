@@ -110,6 +110,11 @@ export default class ArticleItem extends PureComponent {
             </Text>
             <Text style={styles.textArticle}>
               {item.Code_Article && item.Code_Article.slice(-4)}
+              {'  '}
+              <Text style={{fontWeight: 'bold'}}>
+                {Math.round(item.PrixUnitaire * 100) / 100}
+                {' LYD'}
+              </Text>
             </Text>
           </View>
           <View

@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import Modal from 'react-native-modal';
 
 import {Button as ButtonMaterial} from 'react-native-paper';
-import {View, FlatList} from 'react-native';
+import {View, FlatList, Text} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import get_family from '../../../../requests/criterias/get_family';
 import get_sousfamille from '../../../../requests/criterias/get_sousfamille';
@@ -32,6 +32,8 @@ export default class CriteriaModal extends Component {
       criteriaSelected: this.props.criteria[this.props.criteriaSelected],
     });
     let get;
+    this.props.hasResults(false);
+    this.props.setLoading(true);
 
     this.props.criteriaSelected === 'famille'
       ? (get = get_family)
@@ -44,13 +46,16 @@ export default class CriteriaModal extends Component {
       : null;
 
     get &&
-      get()
+      get(this.props.criteria)
         .then(res => {
           this.setState({criteria: res, isLoading: false}, () => {
             this.props.setLoading(false);
+            res.length > 0 && this.props.hasResults(true);
           });
         })
         .catch(e => {
+          this.props.setLoading(false);
+          this.props.hasResults(false);
           this.setState({isLoading: false, failure: true});
           this.props.ee.emit('trigger-message', {
             error: true,
@@ -128,6 +133,16 @@ export default class CriteriaModal extends Component {
               {'  '}
               Press to retry
             </ButtonMaterial>
+          </View>
+        ) : this.state.criteria.length === 0 ? (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: 5,
+            }}>
+            <Text>No results matching this criteria.</Text>
           </View>
         ) : (
           <View style={{flex: 1, justifyContent: 'center', padding: 5}}>

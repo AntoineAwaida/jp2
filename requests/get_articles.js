@@ -53,7 +53,7 @@ export default async function get_articles(criterias, search, page) {
         ')'
       : null;
 
-  let query = `SELECT nomenclature, Designation, Code_Article FROM (SELECT n.Code_SousArticle AS nomenclature, t.Designation AS Designation, t.Code_Article AS Code_Article,  ROW_NUMBER() OVER (ORDER BY t.Designation) AS RowNum FROM ARTICLE AS t LEFT JOIN ARTICLEnomenclature AS n ON t.Code_Article = n.Code_SousArticle WHERE CODE_FAMILLE IN ( SELECT CODE_GAMME FROM zz_UtilGamme WHERE Code_Utilisateur= ${"'" +
+  let query = `SELECT nomenclature, Designation, Code_Article, PrixUnitaire FROM ( SELECT nomenclature, RowNum, Designation, w.Code_Article AS Code_Article, t.PrixUnitaire FROM (SELECT n.Code_SousArticle AS nomenclature, t.Designation AS Designation, t.Code_Article AS Code_Article,  ROW_NUMBER() OVER (ORDER BY t.Designation) AS RowNum FROM ARTICLE AS t JOIN TARIFarticlePrix AS w ON t.Code_Article = w.Code_Article LEFT JOIN ARTICLEnomenclature AS n ON t.Code_Article = n.Code_SousArticle WHERE CODE_FAMILLE IN ( SELECT CODE_GAMME FROM zz_UtilGamme WHERE Code_Utilisateur= ${"'" +
     user.Code_Utilisateur +
     "'"})`;
 
@@ -81,9 +81,8 @@ export default async function get_articles(criterias, search, page) {
 
   query =
     query +
-    ` ) AS Derived WHERE Derived.RowNum BETWEEN ${page * nbPage} AND ${(page +
-      1) *
-      nbPage} `;
+    ` ) AS w JOIN TARIFarticlePrix AS t ON w.Code_Article = t.Code_Article ) AS Derived WHERE Derived.RowNum BETWEEN ${page *
+      nbPage} AND ${(page + 1) * nbPage} `;
 
   const results = await fetchRequest(query);
   return results;

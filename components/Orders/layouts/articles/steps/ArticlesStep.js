@@ -10,8 +10,10 @@ export default class ArticlesStep extends Component {
     super(props, context);
     this.state = {
       isLoading: true,
+      hasResults: false,
     };
     this.setLoading = this.setLoading.bind(this);
+    this.hasResults = this.hasResults.bind(this);
   }
 
   previousStep() {
@@ -19,9 +21,29 @@ export default class ArticlesStep extends Component {
     this.props.previousStep();
   }
 
+  hasNoCriteriaSelected(criterias) {
+    if (this.props.step === 0) {
+      if (criterias['famille'].length === 0) return true;
+    }
+    if (this.props.step === 1) {
+      if (criterias['sous_famille'].length === 0) return true;
+    }
+    if (this.props.step === 2) {
+      if (criterias['gamme'].length === 0) return true;
+    }
+    if (this.props.step === 3) {
+      if (criterias['qualite'].length === 0) return true;
+    }
+    return false;
+  }
+
   setLoading(status) {
     this.setState({isLoading: status});
   }
+  hasResults(status) {
+    this.setState({hasResults: status});
+  }
+
   nextStep() {
     this.setLoading(true);
     this.props.setStep(this.props.step + 1);
@@ -33,6 +55,7 @@ export default class ArticlesStep extends Component {
         <View style={{flex: 0.8}}>
           <CriteriaModal
             setLoading={this.setLoading}
+            hasResults={this.hasResults}
             criteria={this.props.criterias}
             criteriaSelected={
               step === 0
@@ -75,18 +98,39 @@ export default class ArticlesStep extends Component {
           </View>
           <View style={{flex: 0.5, alignItems: 'flex-end'}}>
             <Button
-              disabled={this.state.isLoading}
+              disabled={
+                this.state.isLoading ||
+                !this.state.hasResults ||
+                this.hasNoCriteriaSelected(this.props.criterias)
+              }
               mode="outlined"
               style={{
-                borderColor: this.state.isLoading ? '#D5D3D3' : '#FF4747',
+                borderColor:
+                  this.state.isLoading ||
+                  !this.state.hasResults ||
+                  this.hasNoCriteriaSelected(this.props.criterias)
+                    ? '#D5D3D3'
+                    : '#FF4747',
                 borderWidth: 2,
                 borderRadius: 15,
               }}
-              color={this.state.isLoading ? '#D5D3D3' : '#FF4747'}
+              color={
+                this.state.isLoading ||
+                !this.state.hasResults ||
+                this.hasNoCriteriaSelected(this.props.criterias)
+                  ? '#D5D3D3'
+                  : '#FF4747'
+              }
               onPress={() => this.nextStep()}>
               <FontAwesome5
                 name="chevron-right"
-                color={this.state.isLoading ? '#D5D3D3' : '#FF4747'}
+                color={
+                  this.state.isLoading ||
+                  !this.state.hasResults ||
+                  this.hasNoCriteriaSelected(this.props.criterias)
+                    ? '#D5D3D3'
+                    : '#FF4747'
+                }
                 size={15}
               />
               {'  '}
