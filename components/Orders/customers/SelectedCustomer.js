@@ -53,6 +53,9 @@ class SelectedCustomer extends Component {
                 style={[{marginLeft: 5, fontWeight: 'bold'}, style.textColor]}>
                 {this.props.customer.RaisonSociale}
               </Text>
+              <Text h5 style={[{marginLeft: 5}, style.textColor]}>
+                || {this.props.customer.Code_Client}
+              </Text>
             </View>
             <View
               style={{

@@ -17,7 +17,8 @@ export default async function get_qualite(criteria) {
     FROM ARTICLE AS a 
    WHERE a.Code_Famille IN (${families})
    AND a.Code_SousFamille IN (${subfamilies})
-   AND a.Code_Gamme IN (${gammes})) AS a
+   AND a.Code_Gamme IN (${gammes})
+   AND a.ZoneN5 <>0) AS a
 
   ON p.Code = a.Code_Qualite
   ORDER BY Libelle ASC`;

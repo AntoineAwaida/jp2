@@ -73,6 +73,8 @@ export default async function get_articles(criterias, search, page) {
     query = query + `AND CODE_QUALITE IN ${qualite}`;
   }
 
+  query = query + `AND ZoneN5 <> 0`;
+
   if (search.length > 0) {
     query =
       query +
