@@ -78,7 +78,7 @@ export default async function get_articles(criterias, search, page) {
   if (search.length > 0) {
     query =
       query +
-      `AND t.Code_Article LIKE '%${search}%' OR t.Designation LIKE '%${search}%'`;
+      ` AND (t.Code_Article LIKE '%${search}%' OR t.Designation LIKE '%${search}%' )`;
   }
 
   query =

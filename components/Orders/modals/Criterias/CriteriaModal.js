@@ -11,6 +11,8 @@ import get_qualite from '../../../../requests/criterias/get_qualite';
 import logError from '../../../Settings/logError';
 import CriteriaItem from './CriteriaItem';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import SelectAllItem from './SelectAllItem';
+import {ListItem} from 'react-native-elements';
 
 export default class CriteriaModal extends Component {
   constructor(props) {
@@ -23,6 +25,7 @@ export default class CriteriaModal extends Component {
     };
 
     this.selectCriteria = this.selectCriteria.bind(this);
+    this.selectAllCriterias = this.selectAllCriterias.bind(this);
   }
 
   getData() {
@@ -95,6 +98,26 @@ export default class CriteriaModal extends Component {
         );
   }
 
+  selectAllCriterias() {
+    this.state.criteriaSelected.length === this.state.criteria.length
+      ? this.setState(
+          {
+            criteriaSelected: [],
+          },
+          () => {
+            this.criteriaSelected();
+          },
+        )
+      : this.setState(
+          {
+            criteriaSelected: this.state.criteria,
+          },
+          () => {
+            this.criteriaSelected();
+          },
+        );
+  }
+
   criteriaSelected() {
     this.props.ee.emit('criteriaSelected', {
       type: this.props.criteriaSelected,
@@ -146,6 +169,11 @@ export default class CriteriaModal extends Component {
           </View>
         ) : (
           <View style={{flex: 1, justifyContent: 'center', padding: 5}}>
+            <ListItem title="test"></ListItem>
+            <SelectAllItem
+              criteriaSelected={this.state.criteriaSelected}
+              criteria={this.state.criteria}
+              selectCriteria={this.selectAllCriterias}></SelectAllItem>
             <FlatList
               contentContainerStyle={{
                 display: 'flex',
