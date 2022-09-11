@@ -131,8 +131,8 @@ android {
         applicationId "com.alfozcommercials"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 101002
-        versionName "1.1.1"
+        versionCode 102000
+        versionName "1.1.2"
     }
     splits {
         abi {

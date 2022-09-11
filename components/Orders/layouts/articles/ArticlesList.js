@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {View, Text, Alert, FlatList} from 'react-native';
 
@@ -55,7 +56,12 @@ export default class ArticlesList extends Component {
 
   editArticle(article) {
     this.props.navigation.state.params.ee.emit('selectArticle', article);
-    this.setState({article: article, isBasketModalVisible: true});
+    this.setState({article: article, isBasketModalVisible: true}, async () => {
+      await AsyncStorage.setItem(
+        'articles',
+        JSON.stringify(this.state.articles),
+      );
+    });
   }
 
   deleteArticle(article) {
@@ -74,7 +80,8 @@ export default class ArticlesList extends Component {
               (item, j) => article !== item,
             );
 
-            this.setState({articles: articles}, () => {
+            this.setState({articles: articles}, async () => {
+              await AsyncStorage.setItem('articles', JSON.stringify(articles));
               this.props.navigation.state.params.ee.emit(
                 'editArticles',
                 articles,

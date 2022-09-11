@@ -106,7 +106,9 @@ export default class ArticleItem extends PureComponent {
                 textAlign: 'center',
                 // fontFamily: 'Roboto-Thin',
               }}>
-              {item.Designation && item.Designation.slice(0, 36)}
+              {item.DesignationAR
+                ? item.DesignationAR.slice(0, 36)
+                : item.Designation.slice(0, 36)}
             </Text>
             <Text style={styles.textArticle}>
               {item.Code_Article && item.Code_Article.slice(-4)}
@@ -151,6 +153,19 @@ export default class ArticleItem extends PureComponent {
               backgroundColor: '#00b5ad',
               position: 'absolute',
               left: -3,
+              top: -3,
+              borderRadius: 50,
+            }}></View>
+        )}
+
+        {(!item.StockDepot || item.StockDepot == 0) && (
+          <View
+            style={{
+              height: 15,
+              width: 15,
+              backgroundColor: 'black',
+              position: 'absolute',
+              left: 10,
               top: -3,
               borderRadius: 50,
             }}></View>

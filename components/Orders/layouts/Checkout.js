@@ -30,6 +30,8 @@ function Checkout(props) {
         props.articles,
       );
 
+      await AsyncStorage.removeItem('articles');
+
       props.navigation.navigate('ViewOrder', {
         Code_Commande: result,
         save: true,

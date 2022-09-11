@@ -23,7 +23,6 @@ class Customers extends Component {
   }
 
   selectCustomer(customer) {
-    this.props.emitter.emit('customerSelected');
     this.props.selectCustomer(customer);
   }
 

@@ -27,9 +27,9 @@ async function save_commande(gps, client, price) {
 }
 
 function save_commande_composition(article, numLigne) {
-  let query = `INSERT INTO ipad_COMMANDEcomposition(Code_Commande, Code_Article, Quantite, QuantiteInitiale, PrixUnitaire, NumLigne, status) VALUES (@id, ${
-    article.Code_Article
-  }, ${article.quantity}, ${article.quantity}, ${Math.round(
+  let query = `INSERT INTO ipad_COMMANDEcomposition(Code_Commande, Code_Article, Quantite, QuantiteInitiale, PrixUnitaire, NumLigne, status) VALUES (@id, ${"'" +
+    article.Code_Article +
+    "'"}, ${article.quantity}, ${article.quantity}, ${Math.round(
     (article.price / article.quantity) * 100,
   ) / 100}, ${numLigne}, 'ok')`;
 

@@ -35,6 +35,7 @@ import Dimmer from './modals/Dimmer';
 import BottomMessage from '../Layout/Alert/bottomMessage';
 import ArticlesSteps from './layouts/articles/steps/ArticlesSteps';
 import ArticlesPick from './layouts/articles/pick/ArticlesPick';
+import AsyncStorage from '@react-native-community/async-storage';
 
 const EventEmitter = require('events');
 
@@ -216,13 +217,33 @@ class Orders extends Component {
     );
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // this.listenKeyboard();
-    this.listenEvents();
 
-    const {articles} = this.state;
     const ee = this.ee;
-    this.props.navigation.setParams({articles, ee});
+
+    const stored_articles = await AsyncStorage.getItem('articles');
+    const selectedCustomer = await AsyncStorage.getItem('selectedCustomer');
+
+    if (stored_articles || selectedCustomer) {
+      this.setState(
+        {
+          articles: stored_articles ? JSON.parse(stored_articles) : [],
+          customer: selectedCustomer && JSON.parse(selectedCustomer),
+          articlesPickOpacity: 1,
+        },
+        () => {
+          console.log(selectedCustomer);
+          const {articles} = this.state;
+          this.props.navigation.setParams({articles, ee});
+        },
+      );
+    } else {
+      const {articles} = this.state;
+      this.props.navigation.setParams({articles, ee});
+    }
+
+    this.listenEvents();
 
     this.getCoordinates(true);
   }
@@ -234,9 +255,10 @@ class Orders extends Component {
           e => e.Code_Article !== article.Code_Article,
         ),
       },
-      () => {
+      async () => {
         const {articles} = this.state;
         this.props.navigation.setParams({articles});
+        await AsyncStorage.setItem('articles', JSON.stringify(articles));
       },
     );
   }
@@ -264,6 +286,7 @@ class Orders extends Component {
             const {articles} = this.state;
             this.props.navigation.setParams({articles});
             this.ee.emit('articleAdded');
+            AsyncStorage.setItem('articles', JSON.stringify(articles));
           },
         );
   }
@@ -300,7 +323,10 @@ class Orders extends Component {
   }
 
   selectCustomer(customer) {
-    this.setState({customer: customer});
+    this.setState({customer: customer}, () => {
+      this.ee.emit('customerSelected');
+      AsyncStorage.setItem('selectedCustomer', JSON.stringify(customer));
+    });
   }
 
   toggleCustomerModal(customer) {
@@ -334,7 +360,9 @@ class Orders extends Component {
                   qualite: [],
                 },
               },
-              () => {
+              async () => {
+                await AsyncStorage.removeItem('selectedCustomer');
+                await AsyncStorage.removeItem('articles');
                 this.props.navigation.setParams({
                   articles: this.state.articles,
                 });

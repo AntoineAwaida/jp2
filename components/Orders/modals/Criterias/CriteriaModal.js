@@ -169,7 +169,6 @@ export default class CriteriaModal extends Component {
           </View>
         ) : (
           <View style={{flex: 1, justifyContent: 'center', padding: 5}}>
-            <ListItem title="test"></ListItem>
             <SelectAllItem
               criteriaSelected={this.state.criteriaSelected}
               criteria={this.state.criteria}

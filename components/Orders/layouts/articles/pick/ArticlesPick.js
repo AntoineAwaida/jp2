@@ -113,7 +113,7 @@ export default class ArticlesPick extends Component {
             <View style={{flex: 1, flexDirection: 'row'}}>
               <View style={{flex: 0.6}}>
                 <Text
-                  style={{fontWeight: 'bold', color: '#FF4747', fontSize: 25}}>
+                  style={{fontWeight: 'bold', color: '#FF4747', fontSize: 15}}>
                   Pick articles.
                 </Text>
               </View>
