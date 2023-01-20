@@ -56,14 +56,14 @@ export default async function get_articles(criterias, search, page) {
 
   let query = `SELECT nomenclature, Designation, Code_Article, PrixUnitaire, DesignationAR FROM 
   
-  ( SELECT nomenclature, RowNum, Designation, w.Code_Article AS Code_Article, t.PrixUnitaire, DesignationAR
-    FROM (SELECT DesignationAR, n.Code_SousArticle AS nomenclature, t.Designation AS Designation, t.Code_Article AS Code_Article,  ROW_NUMBER() OVER (ORDER BY t.Designation) AS RowNum FROM ARTICLE AS t 
+  ( SELECT nomenclature, RowNum, Designation, w.Code_Article AS Code_Article, t.PrixUnitaire, DesignationAR,stockdepot
+    FROM (SELECT DesignationAR, n.Code_SousArticle AS nomenclature, t.Designation AS Designation, t.Code_Article AS Code_Article, d.StockDepot as stockdepot,  ROW_NUMBER() OVER (ORDER BY t.Designation) AS RowNum FROM ARTICLE AS t 
     JOIN TARIFarticlePrix AS w ON t.Code_Article = w.Code_Article 
     LEFT JOIN Article_Complement AS c ON t.Code_Article = c.Code_Article
     LEFT JOIN (SELECT Code_Article, Code_Depot, StockDepot FROM ARTICLEDepot WHERE Code_Depot = ${"'" +
       depot +
       "'"}) AS d ON t.Code_Article = d.Code_Article
-    LEFT JOIN ARTICLEnomenclature AS n ON t.Code_Article = n.Code_SousArticle WHERE CODE_FAMILLE IN ( SELECT CODE_GAMME FROM zz_UtilGamme WHERE Code_Utilisateur= ${"'" +
+    LEFT JOIN ARTICLEnomenclature AS n ON t.Code_Article = n.Code_SousArticle WHERE CODE_FAMILLE IN ( SELECT CODE_GAMME FROM zz_UtilGamme WHERE obsolete=0 and Code_Utilisateur= ${"'" +
       user.Code_Utilisateur +
       "'"})`;
 
